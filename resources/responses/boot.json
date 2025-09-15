@@ -1,0 +1,18 @@
+{
+  "none": [
+    "Tell me who you want to throw the boot at, baka >.>"
+  ],
+  "self": [
+    "Why would you throw a boot at yourself...?",
+    "You throw your boot straight up into the air, then act surprised when it hits you on the head.",
+    "Umm... do you want me to throw the boot at you?"
+  ],
+  "bot": [
+    "H-hey! Don't throw a boot at me! o.o",
+    "Oww! Why'd you throw a boot at meee?? ;-;"
+  ],
+  "someone": [
+    "**USER**: To **TARGET**, I leave... a boot to the head!\n**TARGET**: You leave wha-\n*USER threw a :boot: at TARGET's head*",
+    "**USER**: Hey **TARGET**, catch!\n**TARGET**: Wha- OOF!\n*USER beans TARGET in the head with the :boot:*"
+  ]
+}

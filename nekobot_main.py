@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import json
+from random import choice
 
 from helper_funcs import *
 
@@ -92,6 +93,32 @@ async def blush(interaction: discord.Interaction):
     link = await safebooru_image("blush+1girl+solo")
     img = await file_from_url(link, "blush.png")
     await interaction.response.send_message( file=img )
+
+@bot.tree.command(guild=MY_GUILD)
+async def boot(interaction: discord.Interaction, target: discord.User | None = None):
+    """Throw a boot at someone! >:)"""
+    # This represents what a command with multiple possible responses to a given prompt looks like
+    with open("./resources/responses/boot.json") as file:
+        resp = json.load(file)
+        if target == None:
+            await interaction.response.send_message(choice(resp['none']))
+        else:
+            if target == bot.user:
+                await interaction.response.send_message(choice(resp['bot']))
+            elif target == interaction.user:
+                await interaction.response.send_message(choice(resp['self']))
+            else:
+                txt = choice(resp['someone'])
+                await interaction.response.send_message(txt.replace("USER", interaction.user.display_name).replace("TARGET", target.display_name))
+
+@bot.tree.command(guild=MY_GUILD)
+async def botsupport(interaction:discord.Interaction):
+    """Links to the bot's server!"""
+    # FIXME: Update with actual server later
+    if (interaction.guild == None) or (interaction.guild_id != 526466889380003851): # REPLACE WITH SUPPORT SERVER ID
+        await interaction.response.send_message(f"Here you go {interaction.user.mention}: discord.gg/SUPPORTSERVERINVITEHERE")
+    else:
+        await interaction.response.send_message(f"{interaction.user.mention}, you're already in my home silly~ :heart:")
 
 @bot.command()
 async def sync(ctx):
