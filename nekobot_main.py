@@ -1,11 +1,14 @@
 import discord
 from discord.ext import commands
+import json
 
 from helper_funcs import *
 
-# FIXME Remove for final deployment, this is just for testing purposes
-MY_GUILD = discord.Object(id='INSERT YOUR ID HERE (as an integer)')
-MY_TOKEN = 'INSERT YOUR BOT TOKEN HERE (but keep it private for your own sake)'
+with open("./config.json") as f:
+    config = json.load(f)
+    # discord.Object throws an error if fed a None, so ternary handles it gracefully
+    MY_GUILD = discord.Object(id=config['guild-id']) if config['guild-id'] != None else None
+    MY_TOKEN = config['bot-token']
 
 intents = discord.Intents.default()
 intents.message_content = True
