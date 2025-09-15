@@ -71,6 +71,28 @@ async def birb(interaction: discord.Interaction):
     else:
         await interaction.response.send_message("Uh oh, looks like all the birbs are hiding! (Either the person running the bot has the wrong / no token set, or the API is getting ratelimited.)")
 
+@bot.tree.command(guild=MY_GUILD)
+async def bite(interaction: discord.Interaction, target: discord.User | None = None):
+    """Bite someone >:3"""
+    if target == None:
+        await interaction.response.send_message("Are you trying to bite the air...?")
+    else:
+        if target == bot.user:
+            await interaction.response.send_message("I-I'm not food! Don't bite me!! ;-;")
+        elif target == interaction.user:
+            await interaction.response.send_message("W-why would you want to... bite yourself?")
+        else:
+            link = await safebooru_image("biting+(+(+1girl+1boy+)+~+2girls+~+2boys+)")
+            img = await file_from_url(link, "bite.png")
+            await interaction.response.send_message(f"{target.mention}, you just got bitten by{interaction.user.mention}!", file=img)
+
+@bot.tree.command(guild=MY_GUILD)
+async def blush(interaction: discord.Interaction):
+    """Post a blushing anime girl o///o"""
+    link = await safebooru_image("blush+1girl+solo")
+    img = await file_from_url(link, "blush.png")
+    await interaction.response.send_message( file=img )
+
 @bot.command()
 async def sync(ctx):
     await bot.tree.sync(guild=MY_GUILD)
