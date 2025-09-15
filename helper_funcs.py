@@ -3,6 +3,7 @@ import aiohttp
 from io import BytesIO
 
 type Link = str
+type Attribution = str
 
 async def safebooru_image(tags: str) -> Link:
     """Returns either a URL to an image on safebooru, 'Empty', or an HTTP error code number (as string)"""
@@ -53,4 +54,16 @@ async def file_from_url(url:str, name: str)-> discord.File:
         async with session.get(url) as response:
             buffer = BytesIO(await response.read())
     return discord.File(fp=buffer, filename=name)
+
+async def unsplash_image(searchTerm: str, apiToken: str) -> tuple[Link, Attribution]:
+    baseurl = f"https://api.unsplash.com/photos/random/?client_id={apiToken}"
+    searchurl = baseurl + f"&query={searchTerm}"
+
+    async with aiohttp.ClientSession() as session:
+        async with session.get(searchurl) as response:
+            if response.status == 200:
+                img = await response.json()
+                return (img['urls']['regular'], img['user']['name'])
+            else:
+                return ("","")
 

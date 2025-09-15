@@ -1,4 +1,5 @@
 {
     "guild-id": null,
-    "bot-token": "Insert Token Here"
+    "bot-token": "Insert Discord Bot Token Here",
+    "unsplash-token": "Insert Unsplash Access Token Here"
 }

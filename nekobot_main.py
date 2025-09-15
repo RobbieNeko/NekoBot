@@ -9,6 +9,7 @@ with open("./config.json") as f:
     # discord.Object throws an error if fed a None, so ternary handles it gracefully
     MY_GUILD = discord.Object(id=config['guild-id']) if config['guild-id'] != None else None
     MY_TOKEN = config['bot-token']
+    UNSPLASH_TOKEN = config['unsplash-token']
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -58,6 +59,17 @@ async def beer(interaction:discord.Interaction, target: discord.User | None = No
         await interaction.response.send_message(f"Thanks for the beer, {interaction.user.mention}! ^-^ :beer:")
     else:
         await interaction.response.send_message(f"{target.mention}, you just got a :beer: from {interaction.user.mention}!")
+
+@bot.tree.command(guild=MY_GUILD)
+async def birb(interaction: discord.Interaction):
+    """Display a birb!"""
+    img, src = await unsplash_image('bird', UNSPLASH_TOKEN)
+    if (img != ""):
+        emb = discord.Embed(title="Birb Photo from Unsplash", description=f"Image by {src}")
+        emb.set_image(url=img)
+        await interaction.response.send_message(embed=emb)
+    else:
+        await interaction.response.send_message("Uh oh, looks like all the birbs are hiding! (Either the person running the bot has the wrong / no token set, or the API is getting ratelimited.)")
 
 @bot.command()
 async def sync(ctx):
