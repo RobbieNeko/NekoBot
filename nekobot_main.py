@@ -50,9 +50,14 @@ async def baka(interaction: discord.Interaction, target: discord.User|None = Non
             await interaction.response.send_message(f"{interaction.user.mention} just called {target.mention} a baka!", file=img)
 
 @bot.tree.command(guild=MY_GUILD)
-async def testimage(interaction:discord.Interaction):
-    """Posts a test image"""
-    await interaction.response.send_message("https://img4.gelbooru.com/images/31/2f/312fc11a21c5d4ce06dc3aa8bfbb7221.jpg")
+async def beer(interaction:discord.Interaction, target: discord.User | None = None):
+    """Give someone a beer!"""
+    if (target == None) or (target == interaction.user):
+        await interaction.response.send_message("All alone? Aww, I'll share a beer with you :beer:")
+    elif target == bot.user:
+        await interaction.response.send_message(f"Thanks for the beer, {interaction.user.mention}! ^-^ :beer:")
+    else:
+        await interaction.response.send_message(f"{target.mention}, you just got a :beer: from {interaction.user.mention}!")
 
 @bot.command()
 async def sync(ctx):
