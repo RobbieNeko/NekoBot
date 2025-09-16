@@ -5,6 +5,16 @@ from random import choice
 
 from helper_funcs import *
 
+# Class added for customizability, namely the setup hook override
+class NekoBot(commands.Bot):
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    async def setup_hook(self):
+        # Sets things up, namely the global session
+        self.session = aiohttp.ClientSession()
+
 safebooru_meta = {
     "2people": "( ( 1girl 1boy ) ~ 2girls ~ 2boys )" # Actually means >= 2 people, not exactly 2 people
 }
@@ -20,7 +30,7 @@ with open("./config.json") as f:
 
 intents = discord.Intents.default()
 intents.message_content = True
-bot = commands.Bot(command_prefix="$", intents=intents)
+bot = NekoBot(command_prefix="$", intents=intents)
 
 @bot.tree.command(guild=MY_GUILD)
 async def about(interaction: discord.Interaction):
@@ -46,15 +56,15 @@ async def baka(interaction: discord.Interaction, target: discord.User|None = Non
         await interaction.response.send_message("Who are you trying to call a baka...?")
     else:
         if target == bot.user:
-            link = await safebooru_image(["1girl", "crying", "solo", "sad"])
-            img = await file_from_url(link, "crying_baka.png")
+            link = await safebooru_image(bot.session, ["1girl", "crying", "solo", "sad"])
+            img = await file_from_url(bot.session, link, "crying_baka.png")
             await interaction.response.send_message("I-I'm not a baka, Y-YOU'RE A BAKA!! ;-;", file=img)
         elif target == interaction.user:
             img = discord.File("./resources/images/selfbaka.jpg")
             await interaction.response.send_message("You're such a baka you just called yourself a baka!", file=img)
         else:
-            link = await safebooru_image(["pointing_at_another", safebooru_meta["2people"]])
-            img = await file_from_url(link, "baka.png")
+            link = await safebooru_image(bot.session, ["pointing_at_another", safebooru_meta["2people"]])
+            img = await file_from_url(bot.session, link, "baka.png")
             await interaction.response.send_message(f"{interaction.user.mention} just called {target.mention} a baka!", file=img)
 
 @bot.tree.command(guild=MY_GUILD)
@@ -71,7 +81,7 @@ async def beer(interaction:discord.Interaction, target: discord.User | None = No
 @bot.tree.command(guild=MY_GUILD)
 async def birb(interaction: discord.Interaction):
     """Display a birb!"""
-    img, src = await unsplash_image('bird', UNSPLASH_TOKEN)
+    img, src = await unsplash_image(bot.session, 'bird', UNSPLASH_TOKEN)
     if (img != ""):
         emb = discord.Embed(title="Birb Photo from Unsplash", description=f"Image by {src}")
         emb.set_image(url=img)
@@ -91,15 +101,15 @@ async def bite(interaction: discord.Interaction, target: discord.User | None = N
         elif target == interaction.user:
             await interaction.response.send_message("W-why would you want to... bite yourself?")
         else:
-            link = await safebooru_image(["biting", safebooru_meta["2people"]])
-            img = await file_from_url(link, "bite.png")
+            link = await safebooru_image(bot.session, ["biting", safebooru_meta["2people"]])
+            img = await file_from_url(bot.session, link, "bite.png")
             await interaction.response.send_message(f"{target.mention}, you just got bitten by{interaction.user.mention}!", file=img)
 
 @bot.tree.command(guild=MY_GUILD)
 async def blush(interaction: discord.Interaction):
     """Post a blushing anime girl o///o"""
-    link = await safebooru_image(["blush", "1girl", "solo"])
-    img = await file_from_url(link, "blush.png")
+    link = await safebooru_image(bot.session, ["blush", "1girl", "solo"])
+    img = await file_from_url(bot.session, link, "blush.png")
     await interaction.response.send_message( file=img )
 
 @bot.tree.command(guild=MY_GUILD)
@@ -135,11 +145,11 @@ async def botsupport(interaction:discord.Interaction):
 async def calling(interaction: discord.Interaction, txt1: str, txt2: str | None = None):
     """Generates a Tom & Jerry 'calling' meme"""
     if txt2 == None:
-        link = await imgflip_meme(109538217, IMGFLIP_USER, IMGLFIP_PASS, txt1)
+        link = await imgflip_meme(bot.session, 109538217, IMGFLIP_USER, IMGLFIP_PASS, txt1)
     else:
-        link = await imgflip_meme(109538217, IMGFLIP_USER, IMGLFIP_PASS, txt1, txt2)
+        link = await imgflip_meme(bot.session, 109538217, IMGFLIP_USER, IMGLFIP_PASS, txt1, txt2)
     
-    img = await file_from_url(link, 'calling.png')
+    img = await file_from_url(bot.session, link, 'calling.png')
     await interaction.response.send_message(file=img)
 
 @bot.command()
