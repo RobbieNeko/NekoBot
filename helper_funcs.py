@@ -62,6 +62,8 @@ async def file_from_url(session:aiohttp.ClientSession, url:str, name: str)-> dis
     return discord.File(fp=buffer, filename=name)
 
 async def unsplash_image(session:aiohttp.ClientSession, searchTerm: str, apiToken: str) -> tuple[Link, Attribution]:
+    """Fetches an image from unsplash
+    Prefer practically any other API when possible"""
     baseurl = f"https://api.unsplash.com/photos/random/?client_id={apiToken}"
     searchurl = baseurl + f"&query={searchTerm}"
     # Not using parameters here because this is such a simple one
@@ -74,6 +76,8 @@ async def unsplash_image(session:aiohttp.ClientSession, searchTerm: str, apiToke
             return ("","")
 
 async def imgflip_meme(session:aiohttp.ClientSession, id:int, user:str, pword:str, txt1:str ="", txt2:str ="") -> Link:
+    """Generates a meme from imgflip
+    `id` has to be manually obtained from URLs, txt1 is top txt, txt2 is bottom txt"""
     url = "https://api.imgflip.com/caption_image"
     d = {
         "template_id":id,
