@@ -96,3 +96,57 @@ async def imgflip_meme(session:aiohttp.ClientSession, id:int, user:str, pword:st
                 return f"Request Failed: {j['error_message']}"
         else:
             return f"{resp.status}"
+
+async def nekoslife_url(session: aiohttp.ClientSession, endpoint:str) -> str:
+    """Hits an endpoint at nekoslife
+    `endpoint` must be from the list on https://github.com/Nekos-life/nekos-dot-life """
+
+    urlEndpoints = ["smug", "baka", "tickle", "slap", "poke", "pat", "neko", "ngif", "meow", "lizard", "kiss", "hug", "fox_girl", "feed", "cuddle", "kemonomimi", "holo", "wallpaper", "goose", "gecg", "avatar", "waifu"]
+    txtEndpoints = ["why", "cat"],
+    spclEndpoints = ['owoify', "8ball", "chat", "fact", "spoiler"]
+    
+    if endpoint in spclEndpoints:
+        return "Special Endpoints are currently unsupported"
+
+    if (endpoint in urlEndpoints) or endpoint == "eightball":
+        url = "https://nekos.life/api/v2/img/"
+    else:
+        url = "https://nekos.life/api/v2/"
+    url += endpoint
+    
+    async with session.get(url) as response:
+        if response.status == 200:
+            j = await response.json()
+            if endpoint in urlEndpoints:
+                return j['url']
+            else:
+                match endpoint:
+                    case "cat":
+                        return j['cat']
+                    case "why":
+                        return j['why']
+                    case "owoify":
+                        return j['owo']
+                    case "fact":
+                        return j['fact']
+                    case "8ball":
+                        return j['response']
+                    case _:
+                        # This just means we forgot to define the behavior for an endpoint somewhere
+                        # Eventually this should just be a case of "process of elimination'd option"
+                        return "Undefined endpoint response"
+        else:
+            print(f"Response: {response.status}")
+            return "Recieved some HTTP error"
+
+async def flipnoteAPIs(session: aiohttp.ClientSession, api: Link) -> str:
+    """ Hits up an original alexflipnote API.
+    Because hey, might as well politely use it and avoid stuff like Unsplash"""
+
+    async with session.get(api) as response:
+        if response.status == 200:
+            j = await response.json()
+            return j['file']
+        else:
+            print(f"Response: {response.status}")
+            return 'Recieved some HTTP error'

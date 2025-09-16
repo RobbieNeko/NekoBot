@@ -152,6 +152,34 @@ async def calling(interaction: discord.Interaction, txt1: str, txt2: str | None 
     img = await file_from_url(bot.session, link, 'calling.png')
     await interaction.response.send_message(file=img)
 
+@bot.tree.command(guild=MY_GUILD)
+async def cat(interaction: discord.Interaction):
+    """Posts a random cat image! :3"""
+    url = await nekoslife_url(bot.session, 'meow')
+    img = await file_from_url(bot.session, url, 'cat.png')
+    await interaction.response.send_message(file=img)
+
+@bot.tree.command(guild=MY_GUILD)
+@discord.app_commands.describe(choices="A string of choices, with each choice separated by a |" )
+async def choose(interaction: discord.Interaction, choices: str | None = None):
+    if choices == None:
+        await interaction.response.send_message("You didn't give me any choices to pick from...") # Is this even possible?
+    else:
+        choicesList = choices.split('|')
+        with open("./resources/responses/choose.json") as f:
+            j = json.load(f)
+            resp = choice(j)
+            chose = choice(choicesList)
+            await interaction.response.send_message(resp.replace('$X', chose))
+        
+@bot.tree.command(guild=MY_GUILD)
+async def coffee(interation:discord.Interaction):
+    """Sends a coffee image"""
+    url = await flipnoteAPIs(bot.session, "https://coffee.alexflipnote.dev/random.json")
+    img = await file_from_url(bot.session, url, "coffee.png")
+
+    await interation.response.send_message(file=img)
+
 @bot.command()
 async def sync(ctx):
     await bot.tree.sync(guild=MY_GUILD)
