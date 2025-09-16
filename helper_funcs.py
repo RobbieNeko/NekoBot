@@ -5,13 +5,22 @@ from io import BytesIO
 type Link = str
 type Attribution = str
 
-async def safebooru_image(tags: str) -> Link:
+# We should *probably* be using a single aiohttp session for the whole bot, but as it turns out that probably requires fancy things like the bot's setup hook.
+
+async def safebooru_image(tags: list[str]) -> Link:
     """Returns either a URL to an image on safebooru, 'Empty', or an HTTP error code number (as string)"""
-    baseurl = "https://safebooru.org/index.php?page=dapi&s=post&q=index&json=1&tags=sort:random+"
-    searchurl = baseurl + tags
+    baseurl = "https://safebooru.org/index.php"
+    # Using parameters instead of manually constructing the string for the sake of example / trying it out
+    par = {
+        "page": "dapi",
+        "s": "post",
+        "q": "index",
+        "json": '1',
+        "tags": ' '.join(['sort:random'] + tags) # Joining with + gets escaped, but joining with spaces gets made into joining with +. WHY HTTP, WHY.
+    }
 
     async with aiohttp.ClientSession() as session:
-        async with session.get(searchurl) as response:
+        async with session.get(baseurl, params=par) as response:
             if response.status == 200:
                 img = await response.json()
                 if img != {}:
@@ -58,6 +67,7 @@ async def file_from_url(url:str, name: str)-> discord.File:
 async def unsplash_image(searchTerm: str, apiToken: str) -> tuple[Link, Attribution]:
     baseurl = f"https://api.unsplash.com/photos/random/?client_id={apiToken}"
     searchurl = baseurl + f"&query={searchTerm}"
+    # Not using parameters here because this is such a simple one
 
     async with aiohttp.ClientSession() as session:
         async with session.get(searchurl) as response:

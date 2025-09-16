@@ -5,6 +5,10 @@ from random import choice
 
 from helper_funcs import *
 
+safebooru_meta = {
+    "2people": "( ( 1girl 1boy ) ~ 2girls ~ 2boys )" # Actually means >= 2 people, not exactly 2 people
+}
+
 with open("./config.json") as f:
     config = json.load(f)
     # discord.Object throws an error if fed a None, so ternary handles it gracefully
@@ -42,14 +46,14 @@ async def baka(interaction: discord.Interaction, target: discord.User|None = Non
         await interaction.response.send_message("Who are you trying to call a baka...?")
     else:
         if target == bot.user:
-            link = await safebooru_image("1girl+crying+solo+sad")
+            link = await safebooru_image(["1girl", "crying", "solo", "sad"])
             img = await file_from_url(link, "crying_baka.png")
             await interaction.response.send_message("I-I'm not a baka, Y-YOU'RE A BAKA!! ;-;", file=img)
         elif target == interaction.user:
             img = discord.File("./resources/images/selfbaka.jpg")
             await interaction.response.send_message("You're such a baka you just called yourself a baka!", file=img)
         else:
-            link = await safebooru_image("pointing_at_another+(+(+1girl+1boy+)+~+2girls+~+2boys+)")
+            link = await safebooru_image(["pointing_at_another", safebooru_meta["2people"]])
             img = await file_from_url(link, "baka.png")
             await interaction.response.send_message(f"{interaction.user.mention} just called {target.mention} a baka!", file=img)
 
@@ -87,14 +91,14 @@ async def bite(interaction: discord.Interaction, target: discord.User | None = N
         elif target == interaction.user:
             await interaction.response.send_message("W-why would you want to... bite yourself?")
         else:
-            link = await safebooru_image("biting+(+(+1girl+1boy+)+~+2girls+~+2boys+)")
+            link = await safebooru_image(["biting", safebooru_meta["2people"]])
             img = await file_from_url(link, "bite.png")
             await interaction.response.send_message(f"{target.mention}, you just got bitten by{interaction.user.mention}!", file=img)
 
 @bot.tree.command(guild=MY_GUILD)
 async def blush(interaction: discord.Interaction):
     """Post a blushing anime girl o///o"""
-    link = await safebooru_image("blush+1girl+solo")
+    link = await safebooru_image(["blush", "1girl", "solo"])
     img = await file_from_url(link, "blush.png")
     await interaction.response.send_message( file=img )
 
