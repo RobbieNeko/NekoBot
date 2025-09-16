@@ -11,6 +11,8 @@ with open("./config.json") as f:
     MY_GUILD = discord.Object(id=config['guild-id']) if config['guild-id'] != None else None
     MY_TOKEN = config['bot-token']
     UNSPLASH_TOKEN = config['unsplash-token']
+    IMGFLIP_USER = config['imgflip-user']
+    IMGLFIP_PASS = config['imgflip-pass']
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -52,6 +54,7 @@ async def baka(interaction: discord.Interaction, target: discord.User|None = Non
             await interaction.response.send_message(f"{interaction.user.mention} just called {target.mention} a baka!", file=img)
 
 @bot.tree.command(guild=MY_GUILD)
+@discord.app_commands.describe(target="User you want to give a beer (optional)" )
 async def beer(interaction:discord.Interaction, target: discord.User | None = None):
     """Give someone a beer!"""
     if (target == None) or (target == interaction.user):
@@ -73,6 +76,7 @@ async def birb(interaction: discord.Interaction):
         await interaction.response.send_message("Uh oh, looks like all the birbs are hiding! (Either the person running the bot has the wrong / no token set, or the API is getting ratelimited.)")
 
 @bot.tree.command(guild=MY_GUILD)
+@discord.app_commands.describe(target="User you want to target (optional)" )
 async def bite(interaction: discord.Interaction, target: discord.User | None = None):
     """Bite someone >:3"""
     if target == None:
@@ -95,6 +99,7 @@ async def blush(interaction: discord.Interaction):
     await interaction.response.send_message( file=img )
 
 @bot.tree.command(guild=MY_GUILD)
+@discord.app_commands.describe(target="User you want to target (optional)" )
 async def boot(interaction: discord.Interaction, target: discord.User | None = None):
     """Throw a boot at someone! >:)"""
     # This represents what a command with multiple possible responses to a given prompt looks like
@@ -119,6 +124,19 @@ async def botsupport(interaction:discord.Interaction):
         await interaction.response.send_message(f"Here you go {interaction.user.mention}: discord.gg/SUPPORTSERVERINVITEHERE")
     else:
         await interaction.response.send_message(f"{interaction.user.mention}, you're already in my home silly~ :heart:")
+
+@bot.tree.command(guild=MY_GUILD)
+@discord.app_commands.describe(txt1="'Top Text' of the meme" )
+@discord.app_commands.describe(txt2="'Bottom Text' of the meme (optional)" )
+async def calling(interaction: discord.Interaction, txt1: str, txt2: str | None = None):
+    """Generates a Tom & Jerry 'calling' meme"""
+    if txt2 == None:
+        link = await imgflip_meme(109538217, IMGFLIP_USER, IMGLFIP_PASS, txt1)
+    else:
+        link = await imgflip_meme(109538217, IMGFLIP_USER, IMGLFIP_PASS, txt1, txt2)
+    
+    img = await file_from_url(link, 'calling.png')
+    await interaction.response.send_message(file=img)
 
 @bot.command()
 async def sync(ctx):

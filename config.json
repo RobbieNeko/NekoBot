@@ -1,5 +1,7 @@
 {
     "guild-id": null,
     "bot-token": "Insert Discord Bot Token Here",
-    "unsplash-token": "Insert Unsplash Access Token Here"
+    "unsplash-token": "Insert Unsplash Access Token Here",
+    "imgflip-user": "Insert imgflip account username here",
+    "imgflip-pass": "Insert imgflip account password here"
 }

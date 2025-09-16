@@ -67,3 +67,23 @@ async def unsplash_image(searchTerm: str, apiToken: str) -> tuple[Link, Attribut
             else:
                 return ("","")
 
+async def imgflip_meme(id:int, user:str, pword:str, txt1:str ="", txt2:str ="") -> Link:
+    url = "https://api.imgflip.com/caption_image"
+    d = {
+        "template_id":id,
+        "username":user,
+        "password":pword,
+        "text0": txt1,
+        "text1": txt2
+        }
+
+    async with aiohttp.ClientSession() as session:
+        async with session.post(url, data=d) as resp:
+            if resp.status == 200:
+                j = await resp.json()
+                if j['success']:
+                    return j['data']['url']
+                else:
+                    return f"Request Failed: {j['error_message']}"
+            else:
+                return f"{resp.status}"
