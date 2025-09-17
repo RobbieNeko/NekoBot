@@ -103,7 +103,7 @@ async def bite(interaction: discord.Interaction, target: discord.User | None = N
         else:
             link = await safebooru_image(bot.session, ["biting", safebooru_meta["2people"]])
             img = await file_from_url(bot.session, link, "bite.png")
-            await interaction.response.send_message(f"{target.mention}, you just got bitten by{interaction.user.mention}!", file=img)
+            await interaction.response.send_message(f"{target.mention}, you just got bitten by {interaction.user.mention}!", file=img)
 
 @bot.tree.command(guild=MY_GUILD)
 async def blush(interaction: discord.Interaction):
