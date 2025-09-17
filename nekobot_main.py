@@ -222,6 +222,21 @@ async def cuddle(interaction:discord.Interaction, target:discord.User | None = N
             img = await file_from_url(bot.session, link, "cuddle.png")
             await interaction.response.send_message(f"{target.mention}, {interaction.user.mention} just cuddled up with you!", file=img)
 
+@bot.tree.command(guild=MY_GUILD)
+async def dab(interaction: discord.Interaction):
+    """Dab on the haters"""
+    link = await safebooru_image(bot.session, ["dab_(dance)", "solo"])
+    emb = discord.Embed(description=choice(["Dabs on the haters", "Dabbing is sooo 2016", "#DabNeverDied"]))
+    emb.set_image(url=link)
+    await interaction.response.send_message( embed=emb )
+
+@bot.tree.command(guild=MY_GUILD)
+async def dance(interaction: discord.Interaction):
+    """Posts a dancing anime image so you can boogie"""
+    link = await safebooru_image(bot.session, ["dancing"])
+    img = await file_from_url(bot.session, link, "dancing.png")
+    await interaction.response.send_message( file=img )
+
 @bot.command()
 async def sync(ctx):
     await bot.tree.sync(guild=MY_GUILD)
