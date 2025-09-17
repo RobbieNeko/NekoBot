@@ -180,6 +180,48 @@ async def coffee(interation:discord.Interaction):
 
     await interation.response.send_message(file=img)
 
+@bot.tree.command(guild=MY_GUILD)
+async def coinflip(interaction:discord.Interaction):
+    """Flips a coin, for all your flipping needs!"""
+    await interaction.response.send_message(f"{interaction.user.mention} flipped a coin and got {choice(['Heads', 'Tails'])}")
+
+@bot.tree.command(guild=MY_GUILD)
+@discord.app_commands.describe(target="User you want to target (optional)" )
+async def cookie(interaction:discord.Interaction, target:discord.User | None = None):
+    """Give someone a cookie :3"""
+    if target == None:
+        await interaction.response.send_message("Are you trying to give the air a cookie...?")
+    else:
+        if target == bot.user:
+            await interaction.response.send_message(f"T-thank you for the cookie {interaction.user.mention}! ^-^")
+        elif target == interaction.user:
+            await interaction.response.send_message(f"Um... c-could I get a piece of your cookie, {interaction.user.mention}?")
+        else:
+            await interaction.response.send_message(f"{target.mention}, you just got given a :cookie: by {interaction.user.mention}!")
+
+@bot.tree.command(guild=MY_GUILD)
+async def cry(interaction: discord.Interaction):
+    """Post a crying anime girl for when you're sad ._."""
+    link = await safebooru_image(bot.session, ["crying", "1girl", "solo", "sad"])
+    img = await file_from_url(bot.session, link, "crying.png")
+    await interaction.response.send_message( file=img )
+
+@bot.tree.command(guild=MY_GUILD)
+@discord.app_commands.describe(target="User you want to target (optional)" )
+async def cuddle(interaction:discord.Interaction, target:discord.User | None = None):
+    """Cuddle up to someone ^-^"""
+    if target == None:
+        await interaction.response.send_message("I don't think that's the right kind of 'void' to be cuddling...")
+    else:
+        if target == bot.user:
+            await interaction.response.send_message(f"*Cuddles {interaction.user.display_name} back* :3")
+        elif target == interaction.user:
+            await interaction.response.send_message(f"Aww, sorry to see you're all alone {interaction.user.mention} ;-;")
+        else:
+            link = await safebooru_image(bot.session, ["cuddling", safebooru_meta["2people"]])
+            img = await file_from_url(bot.session, link, "cuddle.png")
+            await interaction.response.send_message(f"{target.mention}, {interaction.user.mention} just cuddled up with you!", file=img)
+
 @bot.command()
 async def sync(ctx):
     await bot.tree.sync(guild=MY_GUILD)
