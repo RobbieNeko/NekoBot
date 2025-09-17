@@ -81,13 +81,9 @@ async def beer(interaction:discord.Interaction, target: discord.User | None = No
 @bot.tree.command(guild=MY_GUILD)
 async def birb(interaction: discord.Interaction):
     """Display a birb!"""
-    img, src = await unsplash_image(bot.session, 'bird', UNSPLASH_TOKEN)
-    if (img != ""):
-        emb = discord.Embed(title="Birb Photo from Unsplash", description=f"Image by {src}")
-        emb.set_image(url=img)
-        await interaction.response.send_message(embed=emb)
-    else:
-        await interaction.response.send_message("Uh oh, looks like all the birbs are hiding! (Either the person running the bot has the wrong / no token set, or the API is getting ratelimited.)")
+    url = await flipnoteAPIs(bot.session, "https://api.alexflipnote.dev/birb")
+    img = await file_from_url(bot.session, url, 'birb.png')
+    await interaction.response.send_message(file=img)
 
 @bot.tree.command(guild=MY_GUILD)
 @discord.app_commands.describe(target="User you want to target (optional)" )
@@ -140,16 +136,11 @@ async def botsupport(interaction:discord.Interaction):
         await interaction.response.send_message(f"{interaction.user.mention}, you're already in my home silly~ :heart:")
 
 @bot.tree.command(guild=MY_GUILD)
-@discord.app_commands.describe(txt1="'Top Text' of the meme" )
-@discord.app_commands.describe(txt2="'Bottom Text' of the meme (optional)" )
-async def calling(interaction: discord.Interaction, txt1: str, txt2: str | None = None):
+@discord.app_commands.describe(txt="Text of the meme" )
+async def calling(interaction: discord.Interaction, txt: str):
     """Generates a Tom & Jerry 'calling' meme"""
-    if txt2 == None:
-        link = await imgflip_meme(bot.session, 109538217, IMGFLIP_USER, IMGLFIP_PASS, txt1)
-    else:
-        link = await imgflip_meme(bot.session, 109538217, IMGFLIP_USER, IMGLFIP_PASS, txt1, txt2)
-    
-    img = await file_from_url(bot.session, link, 'calling.png')
+    # This one returns an image directly instead of a link
+    img = await file_from_url(bot.session, f"https://api.alexflipnote.dev/calling?&text={txt}", 'calling.png')
     await interaction.response.send_message(file=img)
 
 @bot.tree.command(guild=MY_GUILD)
