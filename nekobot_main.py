@@ -228,6 +228,46 @@ async def dance(interaction: discord.Interaction):
     img = await file_from_url(bot.session, link, "dancing.png")
     await interaction.response.send_message( file=img )
 
+@bot.tree.command(guild=MY_GUILD)
+@discord.app_commands.describe(txt1="Text in the searchbar" )
+@discord.app_commands.describe(txt2="'Did you mean to search for' text under searchbar" )
+async def didyoumean(interation:discord.Interaction, txt1: str, txt2:str):
+    """Sends an image of a search asking if you meant something else"""
+    # Directly returns image
+    img = await file_from_url(bot.session, f"https://api.alexflipnote.dev/didyoumean?&top={txt1}&bottom={txt2}", "didyoumean.png")
+
+    await interation.response.send_message(file=img)
+
+@bot.tree.command(guild=MY_GUILD)
+async def dog(interaction: discord.Interaction):
+    """Display a dog!"""
+    url = await flipnoteAPIs(bot.session, "https://api.alexflipnote.dev/dogs")
+    img = await file_from_url(bot.session, url, 'dog.png')
+    await interaction.response.send_message(file=img)
+
+@bot.tree.command(guild=MY_GUILD)
+async def doot(interaction: discord.Interaction):
+    """Doot!"""
+    img = discord.File("./resources/images/doot.gif")
+    await interaction.response.send_message(file=img)
+
+@bot.tree.command(guild=MY_GUILD)
+@discord.app_commands.describe(txt1="Top text" )
+@discord.app_commands.describe(txt2="Bottom text" )
+async def drake(interation:discord.Interaction, txt1: str, txt2:str):
+    """Makes a drake meme"""
+    # Direct file return
+    img = await file_from_url(bot.session, f"https://api.alexflipnote.dev/drake?&top={txt1}&bottom={txt2}", "drake.png")
+
+    await interation.response.send_message(file=img)
+
+@bot.tree.command(guild=MY_GUILD)
+async def duck(interaction: discord.Interaction):
+    """Returns a random duck!"""
+    # This one returns an image directly instead of a link
+    img = await file_from_url(bot.session, f"https://random-d.uk/api/v2/randomimg", 'duck.png')
+    await interaction.response.send_message(file=img)
+
 @bot.command()
 async def sync(ctx):
     await bot.tree.sync(guild=MY_GUILD)
