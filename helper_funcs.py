@@ -61,42 +61,6 @@ async def file_from_url(session:aiohttp.ClientSession, url:str, name: str)-> dis
         buffer = BytesIO(await response.read())
     return discord.File(fp=buffer, filename=name)
 
-async def unsplash_image(session:aiohttp.ClientSession, searchTerm: str, apiToken: str) -> tuple[Link, Attribution]:
-    """Fetches an image from unsplash
-    Prefer practically any other API when possible"""
-    baseurl = f"https://api.unsplash.com/photos/random/?client_id={apiToken}"
-    searchurl = baseurl + f"&query={searchTerm}"
-    # Not using parameters here because this is such a simple one
-
-    async with session.get(searchurl) as response:
-        if response.status == 200:
-            img = await response.json()
-            return (img['urls']['regular'], img['user']['name'])
-        else:
-            return ("","")
-
-async def imgflip_meme(session:aiohttp.ClientSession, id:int, user:str, pword:str, txt1:str ="", txt2:str ="") -> Link:
-    """Generates a meme from imgflip
-    `id` has to be manually obtained from URLs, txt1 is top txt, txt2 is bottom txt"""
-    url = "https://api.imgflip.com/caption_image"
-    d = {
-        "template_id":id,
-        "username":user,
-        "password":pword,
-        "text0": txt1,
-        "text1": txt2
-        }
-
-    async with session.post(url, data=d) as resp:
-        if resp.status == 200:
-            j = await resp.json()
-            if j['success']:
-                return j['data']['url']
-            else:
-                return f"Request Failed: {j['error_message']}"
-        else:
-            return f"{resp.status}"
-
 async def nekoslife_url(session: aiohttp.ClientSession, endpoint:str) -> str:
     """Hits an endpoint at nekoslife
     `endpoint` must be from the list on https://github.com/Nekos-life/nekos-dot-life """

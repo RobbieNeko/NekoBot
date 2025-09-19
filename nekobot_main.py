@@ -24,9 +24,6 @@ with open("./config.json") as f:
     # discord.Object throws an error if fed a None, so ternary handles it gracefully
     MY_GUILD = discord.Object(id=config['guild-id']) if config['guild-id'] != None else None
     MY_TOKEN = config['bot-token']
-    UNSPLASH_TOKEN = config['unsplash-token']
-    IMGFLIP_USER = config['imgflip-user']
-    IMGLFIP_PASS = config['imgflip-pass']
 
 intents = discord.Intents.default()
 intents.message_content = True
