@@ -19,15 +19,15 @@ safebooru_meta = {
     "2people": "( ( 1girl 1boy ) ~ 2girls ~ 2boys )" # Actually means >= 2 people, not exactly 2 people
 }
 
-with open("./config.json") as f:
-    config = json.load(f)
+with open("./config.json") as file:
+    config = json.load(file)
     # discord.Object throws an error if fed a None, so ternary handles it gracefully
     MY_GUILD = discord.Object(id=config['guild-id']) if config['guild-id'] != None else None
     MY_TOKEN = config['bot-token']
 
-with open("./resources/banned_tags.json") as f:
+with open("./resources/banned_tags.json") as file:
     # Banned because Discord doesn't like them, and in many countries they could get you in hot water
-    BANNED_TAGS = json.load(f)
+    BANNED_TAGS = json.load(file)
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -289,6 +289,33 @@ async def e621(interaction: discord.Interaction, tags: str):
         await interaction.response.send_message(file=img)
     else:
         await interaction.response.send_message(link)
+
+@bot.tree.command(guild = MY_GUILD)
+async def echo(interaction: discord.Interaction, text: str):
+    await interaction.response.send_message(f"{interaction.user.mention}: {text}")
+
+@bot.tree.command(guild=MY_GUILD)
+async def eightball(interaction: discord.Interaction, question: str):
+    """Asks the magic 8ball a question!"""
+    link = await nekoslife_url(bot.session, f"8ball", f"text={question}")
+    img = await file_from_url(bot.session, link, '8ball.png')
+    await interaction.response.send_message(file=img)
+
+@bot.tree.command(guild=MY_GUILD)
+async def f(interaction: discord.Interaction, reason: str | None = None):
+    """Press F to pay respects"""
+    heart_colors: list[str] = ["pink", "red", "orange", "yellow", "green", "light_blue", "blue", "purple"]
+    if reason == None:
+        await interaction.response.send_message(f"{interaction.user.mention} just paid their respects :{choice(heart_colors)}_heart:")
+    else:
+        await interaction.response.send_message(f"{interaction.user.mention} just paid their respects for {reason} :{choice(heart_colors)}_heart:")
+
+@bot.tree.command(guild=MY_GUILD)
+async def facts(interaction:discord.Interaction, text:str):
+    """Makes whatever you say into a fact!"""
+    # Directly returns image
+    img = await file_from_url(bot.session, f"https://api.alexflipnote.dev/facts?text={text}", "facts.png")
+    await interaction.response.send_message(file=img)
 
 @bot.command()
 async def sync(ctx):

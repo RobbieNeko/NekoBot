@@ -60,13 +60,13 @@ async def file_from_url(session:aiohttp.ClientSession, url:str, name: str)-> dis
         buffer = BytesIO(await response.read())
     return discord.File(fp=buffer, filename=name)
 
-async def nekoslife_url(session: aiohttp.ClientSession, endpoint:str) -> str:
+async def nekoslife_url(session: aiohttp.ClientSession, endpoint:str, params: str | None = None) -> str:
     """Hits an endpoint at nekoslife
     `endpoint` must be from the list on https://github.com/Nekos-life/nekos-dot-life """
 
-    urlEndpoints = ["smug", "baka", "tickle", "slap", "poke", "pat", "neko", "ngif", "meow", "lizard", "kiss", "hug", "fox_girl", "feed", "cuddle", "kemonomimi", "holo", "wallpaper", "goose", "gecg", "avatar", "waifu"]
-    txtEndpoints = ["why", "cat"],
-    spclEndpoints = ['owoify', "8ball", "chat", "fact", "spoiler"]
+    urlEndpoints = ["smug", "baka", "tickle", "slap", "poke", "pat", "neko", "ngif", "meow", "lizard", "kiss", "hug", "fox_girl", "feed", "cuddle", "kemonomimi", "holo", "wallpaper", "goose", "gecg", "avatar", "waifu", "8ball"]
+    txtEndpoints = ["why", "cat"]
+    spclEndpoints = ['owoify', "chat", "fact", "spoiler"]
     
     if endpoint in spclEndpoints:
         return "Special Endpoints are currently unsupported"
@@ -76,6 +76,8 @@ async def nekoslife_url(session: aiohttp.ClientSession, endpoint:str) -> str:
     else:
         url = "https://nekos.life/api/v2/"
     url += endpoint
+    if params != None:
+        url += '?' + params
     
     async with session.get(url) as response:
         if response.status == 200:
@@ -92,8 +94,6 @@ async def nekoslife_url(session: aiohttp.ClientSession, endpoint:str) -> str:
                         return j['owo']
                     case "fact":
                         return j['fact']
-                    case "8ball":
-                        return j['response']
                     case _:
                         # This just means we forgot to define the behavior for an endpoint somewhere
                         # Eventually this should just be a case of "process of elimination'd option"
