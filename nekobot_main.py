@@ -25,6 +25,10 @@ with open("./config.json") as f:
     MY_GUILD = discord.Object(id=config['guild-id']) if config['guild-id'] != None else None
     MY_TOKEN = config['bot-token']
 
+with open("./resources/banned_tags.json") as f:
+    # Banned because Discord doesn't like them, and in many countries they could get you in hot water
+    BANNED_TAGS = json.load(f)
+
 intents = discord.Intents.default()
 intents.message_content = True
 bot = NekoBot(command_prefix="$", intents=intents)
@@ -264,6 +268,27 @@ async def duck(interaction: discord.Interaction):
     # This one returns an image directly instead of a link
     img = await file_from_url(bot.session, f"https://random-d.uk/api/v2/randomimg", 'duck.png')
     await interaction.response.send_message(file=img)
+
+@bot.tree.command(guild = MY_GUILD)
+@discord.app_commands.describe(tags="A list of tags, separated by spaces." )
+async def e621(interaction: discord.Interaction, tags: str):
+    """Searches E621 and returns a random post matching your tags!"""
+    # Assumes the user knows how e621 tags work
+    # TODO: Also gate this behind being in an NSFW channel
+    tagList = tags.split()
+    for tag in tagList:
+        for ban in BANNED_TAGS:
+            # This catches substrings too, otherwise it'd be shockingly easy to bypass
+            if ban in tag:
+                await interaction.response.send_message("Uh oh, your list of tags contained a tag for content that Discord TOS does not permit!\nSorry, but I can't help you with this search >.>")
+    
+    link = await e621API(bot.session, tagList)
+    # All the error messages do not start with 'h'
+    if link[0] == 'h':
+        img = await file_from_url(bot.session, link, "e621.png")
+        await interaction.response.send_message(file=img)
+    else:
+        await interaction.response.send_message(link)
 
 @bot.command()
 async def sync(ctx):

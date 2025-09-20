@@ -1,5 +1,6 @@
 import discord
 import aiohttp
+import base64
 from io import BytesIO
 
 type Link = str
@@ -28,10 +29,8 @@ async def safebooru_image(session:aiohttp.ClientSession, tags: list[str]) -> Lin
         else:
             return f'{response.status}'
 
-async def http_error_handler(error:str) -> str:
+async def http_error_handler(code:int) -> str:
     """Returns an error message depending on the HTTP error code"""
-    code = int(error)
-
     match code:
         case 400:
             return "Uh oh, the website didn't like your request, but we don't know why! Please contact the person who is running the bot and report the issue!"
@@ -114,3 +113,27 @@ async def flipnoteAPIs(session: aiohttp.ClientSession, api: Link) -> str:
         else:
             print(f"Response: {response.status}")
             return 'Recieved some HTTP error'
+
+async def e621API(session: aiohttp.ClientSession, tags: list[str], username: str | None = None, apikey: str | None = None) -> str:
+    """Polls the e621 API"""
+    # Please change user-agent if you run a fork of the bot
+    # Or at least replace the contact info bit
+    userAgent = f"NekoBot/1.0 (by Rosa Aeterna (NekoRobbie on Github))"
+    baseURL = "https://e621.net/posts.json"
+    tags.append("order:random")
+    searchURL = baseURL + f"?tags={'+'.join(tags)}"
+    headers = {
+        "User-Agent": userAgent,
+    }
+    if (username != None) and (apikey != None):
+        # This shouldn't be required for most posts, but it's a good idea to have it already in-place in case we need it
+        headers["Authorization"] = "Basic " + base64.b64encode(f"{username}:{apikey}".encode("ascii")).decode("ascii")
+
+    async with session.get(searchURL, headers=headers) as response:
+        if response.status == 200:
+            j = await response.json()
+            return j['posts'][0]['file']['url']
+        elif response.status == 204:
+            return "No results returned! o.o"
+        else:
+            return await http_error_handler(response.status)
