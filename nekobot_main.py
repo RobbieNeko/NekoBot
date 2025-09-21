@@ -24,6 +24,8 @@ with open("./config.json") as file:
     # discord.Object throws an error if fed a None, so ternary handles it gracefully
     MY_GUILD = discord.Object(id=config['guild-id']) if config['guild-id'] != None else None
     MY_TOKEN = config['bot-token']
+    SUPPORT_INVITE = config['support-server-link']
+    FEEDBACK_CHANNEL = config['feedback-channel-id']
 
 with open("./resources/banned_tags.json") as file:
     # Banned because Discord doesn't like them, and in many countries they could get you in hot water
@@ -132,7 +134,7 @@ async def botsupport(interaction:discord.Interaction):
     """Links to the bot's server!"""
     # FIXME: Update with actual server later
     if (interaction.guild == None) or (interaction.guild_id != 526466889380003851): # REPLACE WITH SUPPORT SERVER ID
-        await interaction.response.send_message(f"Here you go {interaction.user.mention}: discord.gg/SUPPORTSERVERINVITEHERE")
+        await interaction.response.send_message(f"Here you go {interaction.user.mention}: {SUPPORT_INVITE}")
     else:
         await interaction.response.send_message(f"{interaction.user.mention}, you're already in my home silly~ :heart:")
 
@@ -317,6 +319,17 @@ async def facts(interaction:discord.Interaction, text:str):
     img = await file_from_url(bot.session, f"https://api.alexflipnote.dev/facts?text={text}", "facts.png")
     await interaction.response.send_message(file=img)
 
+@bot.tree.command(guild=MY_GUILD)
+@discord.app_commands.describe(feedback="Feedback! Please remember that you're sending this to a person :3" )
+async def feedback(interaction:discord.Interaction, feedback: str):
+    """Sends feedback to the person running the bot!"""
+    # Unsure if I actually prefer this or github issues tbh
+    channel = bot.get_channel(FEEDBACK_CHANNEL)
+    if type(channel) == discord.TextChannel:
+        await channel.send(feedback)
+        await interaction.response.send_message("Feedback sent!", ephemeral=True)
+    else:
+        await interaction.response.send_message("Uh oh, it looks like the person running the bot didn't set the feedback channel correctly!\nAnd... you can't report it to them using the feedback command.\nSo, um, I guess find them yourself? Sorry I can't be more helpful ;-;")
 @bot.command()
 async def sync(ctx):
     await bot.tree.sync(guild=MY_GUILD)

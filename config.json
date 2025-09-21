@@ -1,4 +1,6 @@
 {
     "guild-id": null,
-    "bot-token": "Insert Discord Bot Token Here"
+    "bot-token": "Insert Discord Bot Token Here",
+    "support-server-link": "discord.gg/SUPPORTSERVERINVITEHERE",
+    "feedback-channel-id": null
 }
