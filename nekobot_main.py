@@ -271,12 +271,11 @@ async def duck(interaction: discord.Interaction):
     img = await file_from_url(bot.session, f"https://random-d.uk/api/v2/randomimg", 'duck.png')
     await interaction.response.send_message(file=img)
 
-@bot.tree.command(guild = MY_GUILD)
+@bot.tree.command(guild = MY_GUILD, nsfw=True)
 @discord.app_commands.describe(tags="A list of tags, separated by spaces." )
 async def e621(interaction: discord.Interaction, tags: str):
     """Searches E621 and returns a random post matching your tags!"""
     # Assumes the user knows how e621 tags work
-    # TODO: Also gate this behind being in an NSFW channel
     tagList = tags.split()
     for tag in tagList:
         for ban in BANNED_TAGS:
