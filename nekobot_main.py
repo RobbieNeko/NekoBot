@@ -367,6 +367,55 @@ async def funfact(interaction: discord.Interaction):
     fact = await nekoslife_url(bot.session, "fact")
     await interaction.response.send_message("Fun fact: " + fact)
 
+@bot.tree.command(guild=MY_GUILD)
+@discord.app_commands.describe(target="User you want to target (optional)" )
+async def handholding(interaction:discord.Interaction, target:discord.User | None = None):
+    """Engage in some handholding! :3"""
+    if target == None:
+        await interaction.response.send_message("Um... are you trying to hold the hand of a ghost?")
+    else:
+        if target == bot.user:
+            await interaction.response.send_message(f"*Holds {interaction.user.display_name}'s hand back* :3")
+        elif target == interaction.user:
+            await interaction.response.send_message(f"Aww, sorry to see you're all alone {interaction.user.mention} ;-;")
+        else:
+            link = await safebooru_image(bot.session, ["holding_hands", safebooru_meta["2people"]])
+            img = await file_from_url(bot.session, link, "handholding.png")
+            await interaction.response.send_message(f"{target.mention}, {interaction.user.mention} just held hands with you!", file=img)
+
+@bot.tree.command(guild=MY_GUILD)
+@discord.app_commands.describe(target="User you want to target (optional)" )
+async def highfive(interaction:discord.Interaction, target:discord.User | None = None):
+    """High five someone!"""
+    if target == None:
+        await interaction.response.send_message("Was there a fly or something? Why were you swatting at the air?")
+    else:
+        if target == bot.user:
+            await interaction.response.send_message(f"Hecc yeah! High-five {interaction.user.mention}! :folded_hands:")
+        elif target == interaction.user:
+            await interaction.response.send_message(f"Um... {interaction.user.mention}, I think that's called clapping, not a self-high-five >.>")
+        else:
+            link = await safebooru_image(bot.session, ["high_five", safebooru_meta["2people"]])
+            img = await file_from_url(bot.session, link, "highfive.png")
+            await interaction.response.send_message(f"{target.mention}, {interaction.user.mention} just high-fived you!", file=img)
+
+@bot.tree.command(guild=MY_GUILD)
+@discord.app_commands.describe(target="User you want to target (optional)" )
+async def hug(interaction:discord.Interaction, target:discord.User | None = None):
+    """Hug someone ^//^"""
+    if target == None:
+        await interaction.response.send_message("Are you... trying to grab the air?")
+    else:
+        if target == bot.user:
+            await interaction.response.send_message(f"*Hugs {interaction.user.display_name} back* :heart:")
+        elif target == interaction.user:
+            img = discord.File("./resources/images/selfhug.gif")
+            await interaction.response.send_message(f"Aww, sorry to see you're all alone {interaction.user.mention} ;-;", file=img)
+        else:
+            link = await safebooru_image(bot.session, ["hug", safebooru_meta["2people"]])
+            img = await file_from_url(bot.session, link, "hug.png")
+            await interaction.response.send_message(f"{target.mention}, {interaction.user.mention} just hugged you!", file=img)
+
 @bot.command()
 async def sync(ctx):
     await bot.tree.sync(guild=MY_GUILD)
