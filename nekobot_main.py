@@ -26,6 +26,7 @@ with open("./config.json") as file:
     MY_TOKEN = config['bot-token']
     SUPPORT_INVITE = config['support-server-link']
     FEEDBACK_CHANNEL = config['feedback-channel-id']
+    BOT_INVITE = config['bot-invite-link']
 
 with open("./resources/banned_tags.json") as file:
     # Banned because Discord doesn't like them, and in many countries they could get you in hot water
@@ -415,6 +416,17 @@ async def hug(interaction:discord.Interaction, target:discord.User | None = None
             link = await safebooru_image(bot.session, ["hug", safebooru_meta["2people"]])
             img = await file_from_url(bot.session, link, "hug.png")
             await interaction.response.send_message(f"{target.mention}, {interaction.user.mention} just hugged you!", file=img)
+
+@bot.tree.command(guild=MY_GUILD)
+async def invite(interaction: discord.Interaction):
+    """Get an invite link to invite me to your server!"""
+    # Note: You will start running into restrictions at 100 servers with the bot in them unless you verify.
+    await interaction.response.send_message("Here's a link to invite me to your server!\n"+BOT_INVITE, ephemeral=True)
+
+@bot.tree.command(guild=MY_GUILD)
+async def joinedat(interaction: discord.Interaction, user: discord.Member):
+    """Get the date that someone joined the server!"""
+    await interaction.response.send_message(f"{user.display_name} joined {user.joined_at.strftime("%B %d, %Y") if user.joined_at != None else "before date and time were a thing! o.O"}")
 
 @bot.command()
 async def sync(ctx):
