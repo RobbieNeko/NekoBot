@@ -330,6 +330,44 @@ async def feedback(interaction:discord.Interaction, feedback: str):
         await interaction.response.send_message("Feedback sent!", ephemeral=True)
     else:
         await interaction.response.send_message("Uh oh, it looks like the person running the bot didn't set the feedback channel correctly!\nAnd... you can't report it to them using the feedback command.\nSo, um, I guess find them yourself? Sorry I can't be more helpful ;-;")
+
+@bot.tree.command(guild=MY_GUILD)
+@discord.app_commands.describe(target="User you want to target (optional)" )
+async def flower(interaction: discord.Interaction, target: discord.User | None = None) :
+    """Give someone a flower!"""
+    # French is convenient for avoiding name collision ;P
+    fleur = choice(['blossom', 'cherry_blossom', 'hibiscus', 'hyacinth', 'lotus', 'rose', 'sunflower', 'tulip'])
+    
+    if target == None:
+        await interaction.response.send_message("Um... are you trying to give the floor a flower?")
+    elif target == interaction.user:
+        await interaction.response.send_message(f"Oh, no-one's given you flowers before? ... here, I'll be the first! :{fleur}:")
+    elif target == bot.user:
+        await interaction.response.send_message(f"Awww, thanks for the flower {interaction.user.mention}! ^//^ :{fleur}:")
+    else:
+        await interaction.response.send_message(f"{target.mention}, you just got a :{fleur}: from {interaction.user.mention}!")
+
+@bot.tree.command(guild=MY_GUILD)
+@discord.app_commands.describe(target="User you want to target (optional)" )
+async def fruit(interaction: discord.Interaction, target: discord.User | None = None) :
+    """Give someone some fruit!"""
+    froot = choice(['red_apple', 'cherries', 'banana', 'grapes', 'kiwi', 'lime', 'mango', 'melon', 'pear', 'pineapple', 'tangerine', 'watermelon', 'lemon', 'peach'])
+    
+    if target == None:
+        await interaction.response.send_message("Um... are you trying to leave an offering to the spirits?")
+    elif target == interaction.user:
+        await interaction.response.send_message(f"Um, {interaction.user.mention}... can I have some of your :{froot}:? It looks really tasty!")
+    elif target == bot.user:
+        await interaction.response.send_message(f"Oooh, thanks for the :{froot}: {interaction.user.mention}! It's really juicy ^-^")
+    else:
+        await interaction.response.send_message(f"{target.mention}, you just got a :{froot}: from {interaction.user.mention}!")
+
+@bot.tree.command(guild=MY_GUILD)
+async def funfact(interaction: discord.Interaction):
+    """Get a fun fact!"""
+    fact = await nekoslife_url(bot.session, "fact")
+    await interaction.response.send_message("Fun fact: " + fact)
+
 @bot.command()
 async def sync(ctx):
     await bot.tree.sync(guild=MY_GUILD)

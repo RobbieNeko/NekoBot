@@ -65,8 +65,8 @@ async def nekoslife_url(session: aiohttp.ClientSession, endpoint:str, params: st
     `endpoint` must be from the list on https://github.com/Nekos-life/nekos-dot-life """
 
     urlEndpoints = ["smug", "baka", "tickle", "slap", "poke", "pat", "neko", "ngif", "meow", "lizard", "kiss", "hug", "fox_girl", "feed", "cuddle", "kemonomimi", "holo", "wallpaper", "goose", "gecg", "avatar", "waifu", "8ball"]
-    txtEndpoints = ["why", "cat"]
-    spclEndpoints = ['owoify', "chat", "fact", "spoiler"]
+    txtEndpoints = ["why", "cat", "fact"]
+    spclEndpoints = ['owoify', "chat", "spoiler"]
     
     if endpoint in spclEndpoints:
         return "Special Endpoints are currently unsupported"
