@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 import json
-from random import choice
+import random
 
 from helper_funcs import *
 
@@ -120,14 +120,14 @@ async def boot(interaction: discord.Interaction, target: discord.User | None = N
     with open("./resources/responses/boot.json") as file:
         resp = json.load(file)
         if target == None:
-            await interaction.response.send_message(choice(resp['none']))
+            await interaction.response.send_message(random.choice(resp['none']))
         else:
             if target == bot.user:
-                await interaction.response.send_message(choice(resp['bot']))
+                await interaction.response.send_message(random.choice(resp['bot']))
             elif target == interaction.user:
-                await interaction.response.send_message(choice(resp['self']))
+                await interaction.response.send_message(random.choice(resp['self']))
             else:
-                txt = choice(resp['someone'])
+                txt = random.choice(resp['someone'])
                 await interaction.response.send_message(txt.replace("USER", interaction.user.display_name).replace("TARGET", target.display_name))
 
 @bot.tree.command(guild=MY_GUILD)
@@ -163,8 +163,8 @@ async def choose(interaction: discord.Interaction, choices: str | None = None):
         choicesList = choices.split('|')
         with open("./resources/responses/choose.json") as f:
             j = json.load(f)
-            resp = choice(j)
-            chose = choice(choicesList)
+            resp = random.choice(j)
+            chose = random.choice(choicesList)
             await interaction.response.send_message(resp.replace('$X', chose))
         
 @bot.tree.command(guild=MY_GUILD)
@@ -178,7 +178,7 @@ async def coffee(interation:discord.Interaction):
 @bot.tree.command(guild=MY_GUILD)
 async def coinflip(interaction:discord.Interaction):
     """Flips a coin, for all your flipping needs!"""
-    await interaction.response.send_message(f"{interaction.user.mention} flipped a coin and got {choice(['Heads', 'Tails'])}")
+    await interaction.response.send_message(f"{interaction.user.mention} flipped a coin and got {random.choice(['Heads', 'Tails'])}")
 
 @bot.tree.command(guild=MY_GUILD)
 @discord.app_commands.describe(target="User you want to target (optional)" )
@@ -221,7 +221,7 @@ async def cuddle(interaction:discord.Interaction, target:discord.User | None = N
 async def dab(interaction: discord.Interaction):
     """Dab on the haters"""
     link = await safebooru_image(bot.session, ["dab_(dance)", "solo"])
-    emb = discord.Embed(description=choice(["Dabs on the haters", "Dabbing is sooo 2016", "#DabNeverDied"]))
+    emb = discord.Embed(description=random.choice(["Dabs on the haters", "Dabbing is sooo 2016", "#DabNeverDied"]))
     emb.set_image(url=link)
     await interaction.response.send_message( embed=emb )
 
@@ -308,9 +308,9 @@ async def f(interaction: discord.Interaction, reason: str | None = None):
     """Press F to pay respects"""
     heart_colors: list[str] = ["pink", "red", "orange", "yellow", "green", "light_blue", "blue", "purple"]
     if reason == None:
-        await interaction.response.send_message(f"{interaction.user.mention} just paid their respects :{choice(heart_colors)}_heart:")
+        await interaction.response.send_message(f"{interaction.user.mention} just paid their respects :{random.choice(heart_colors)}_heart:")
     else:
-        await interaction.response.send_message(f"{interaction.user.mention} just paid their respects for {reason} :{choice(heart_colors)}_heart:")
+        await interaction.response.send_message(f"{interaction.user.mention} just paid their respects for {reason} :{random.choice(heart_colors)}_heart:")
 
 @bot.tree.command(guild=MY_GUILD)
 async def facts(interaction:discord.Interaction, text:str):
@@ -336,7 +336,7 @@ async def feedback(interaction:discord.Interaction, feedback: str):
 async def flower(interaction: discord.Interaction, target: discord.User | None = None) :
     """Give someone a flower!"""
     # French is convenient for avoiding name collision ;P
-    fleur = choice(['blossom', 'cherry_blossom', 'hibiscus', 'hyacinth', 'lotus', 'rose', 'sunflower', 'tulip'])
+    fleur = random.choice(['blossom', 'cherry_blossom', 'hibiscus', 'hyacinth', 'lotus', 'rose', 'sunflower', 'tulip'])
     
     if target == None:
         await interaction.response.send_message("Um... are you trying to give the floor a flower?")
@@ -351,7 +351,7 @@ async def flower(interaction: discord.Interaction, target: discord.User | None =
 @discord.app_commands.describe(target="User you want to target (optional)" )
 async def fruit(interaction: discord.Interaction, target: discord.User | None = None) :
     """Give someone some fruit!"""
-    froot = choice(['red_apple', 'cherries', 'banana', 'grapes', 'kiwi', 'lime', 'mango', 'melon', 'pear', 'pineapple', 'tangerine', 'watermelon', 'lemon', 'peach'])
+    froot = random.choice(['red_apple', 'cherries', 'banana', 'grapes', 'kiwi', 'lime', 'mango', 'melon', 'pear', 'pineapple', 'tangerine', 'watermelon', 'lemon', 'peach'])
     
     if target == None:
         await interaction.response.send_message("Um... are you trying to leave an offering to the spirits?")
@@ -427,6 +427,58 @@ async def invite(interaction: discord.Interaction):
 async def joinedat(interaction: discord.Interaction, user: discord.Member):
     """Get the date that someone joined the server!"""
     await interaction.response.send_message(f"{user.display_name} joined {user.joined_at.strftime("%B %d, %Y") if user.joined_at != None else "before date and time were a thing! o.O"}")
+
+@bot.tree.command(guild=MY_GUILD)
+@discord.app_commands.describe(target="User you want to target (optional)" )
+async def kiss(interaction:discord.Interaction, target:discord.User | None = None):
+    """Kiss someone ^////^"""
+    if target == None:
+        await interaction.response.send_message("U-um... are you trying to blow a kiss at me? o//o")
+    else:
+        if target == bot.user:
+            await interaction.response.send_message(f"*Kisses {interaction.user.display_name} back* :heart: ^///^")
+        elif target == interaction.user:
+            await interaction.response.send_message(f"Aww, sorry to see you're all alone {interaction.user.mention} ;-;")
+        else:
+            link = await safebooru_image(bot.session, ["kiss", safebooru_meta["2people"]])
+            img = await file_from_url(bot.session, link, "kiss.png")
+            await interaction.response.send_message(f"{target.mention}, {interaction.user.mention} just kissed you!", file=img)
+
+@bot.tree.command(guild=MY_GUILD)
+@discord.app_commands.describe(target="User you want to target (optional)" )
+async def lick(interaction:discord.Interaction, target:discord.User | None = None):
+    """Lick someone o///o"""
+    if target == None:
+        await interaction.response.send_message("U-um... are you trying to lick the air?? o.o")
+    else:
+        if target == bot.user:
+            await interaction.response.send_message(f"{interaction.user.mention}... am I tasty or something?? o///o")
+        elif target == interaction.user:
+            await interaction.response.send_message(f"Are you... trying to lick yourself clean like a cat? o.o")
+        else:
+            link = await safebooru_image(bot.session, ["licking_another's_face", safebooru_meta["2people"]]) # Weird tag acquired straight from website search
+            img = await file_from_url(bot.session, link, "lick.png")
+            await interaction.response.send_message(f"{target.mention}, you just got licked by {interaction.user.mention}!", file=img)
+
+@bot.tree.command(guild=MY_GUILD)
+async def lovecalc(interaction: discord.Interaction, person1: discord.User, person2: discord.User):
+    """Calculate the love between two people!"""
+    if (person1 == person2) and (person1 == interaction.user):
+        link = await safebooru_image(bot.session, ["hug", "comforting", safebooru_meta["2people"]])
+        img = await file_from_url(bot.session, link, "comforting.png")
+        await interaction.response.send_message("W-wait... are you not sure if you love yourself or not???\nI'm so sorry to hear that ;-;", file=img)
+    elif (person1 == bot.user and person2 == interaction.user) or (person2 == bot.user and person1 == interaction.user):
+        link = await nekosbest_url(bot.session, "blush")
+        img = await file_from_url(bot.session, link, 'blush.gif')
+        await interaction.response.send_message(f"U-um, are you trying to tell me something {interaction.user.display_name}???", file=img)
+    elif (person1 == bot.user) or (person2 == bot.user):
+        await interaction.response.send_message(f"{interaction.user}... are you trying to ship me and them?? >///>")
+    else:
+        love = random.Random(person1.id + person2.id)
+        percent = love.randint(0, 100)
+
+        emb = discord.Embed(title=":heart: Love Calculator :heart:", description=f"Love between {person1.mention} and {person2.mention} is at **{percent}%**")
+        await interaction.response.send_message(embed=emb)
 
 @bot.command()
 async def sync(ctx):

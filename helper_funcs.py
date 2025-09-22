@@ -137,3 +137,14 @@ async def e621API(session: aiohttp.ClientSession, tags: list[str], username: str
             return "No results returned! o.o"
         else:
             return await http_error_handler(response.status)
+
+async def nekosbest_url(session: aiohttp.ClientSession, endpoint: str) -> str:
+    """Requests images (usually gifs) from nekosbest api"""
+    url = "https://nekos.best/api/v2/" + endpoint
+
+    async with session.get(url) as response:
+        if response.status == 200:
+            j = await response.json()
+            return j['results'][0]['url']
+        else:
+            return await http_error_handler(response.status)
