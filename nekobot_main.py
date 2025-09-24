@@ -60,15 +60,15 @@ async def baka(interaction: discord.Interaction, target: discord.User|None = Non
         await interaction.response.send_message("Who are you trying to call a baka...?")
     else:
         if target == bot.user:
-            link = await safebooru_image(bot.session, ["1girl", "crying", "solo", "sad"])
-            img = await file_from_url(bot.session, link, "crying_baka.png")
+            link = await nekosbest_url(bot.session, 'cry')
+            img = await file_from_url(bot.session, link, "crying.gif")
             await interaction.response.send_message("I-I'm not a baka, Y-YOU'RE A BAKA!! ;-;", file=img)
         elif target == interaction.user:
             img = discord.File("./resources/images/selfbaka.jpg")
             await interaction.response.send_message("You're such a baka you just called yourself a baka!", file=img)
         else:
-            link = await safebooru_image(bot.session, ["pointing_at_another", safebooru_meta["2people"]])
-            img = await file_from_url(bot.session, link, "baka.png")
+            link = await nekosbest_url(bot.session, 'baka')
+            img = await file_from_url(bot.session, link, "baka.gif")
             await interaction.response.send_message(f"{interaction.user.mention} just called {target.mention} a baka!", file=img)
 
 @bot.tree.command(guild=MY_GUILD)
@@ -101,15 +101,15 @@ async def bite(interaction: discord.Interaction, target: discord.User | None = N
         elif target == interaction.user:
             await interaction.response.send_message("W-why would you want to... bite yourself?")
         else:
-            link = await safebooru_image(bot.session, ["biting", safebooru_meta["2people"]])
-            img = await file_from_url(bot.session, link, "bite.png")
+            link = await nekosbest_url(bot.session, 'bite')
+            img = await file_from_url(bot.session, link, "bite.gif")
             await interaction.response.send_message(f"{target.mention}, you just got bitten by {interaction.user.mention}!", file=img)
 
 @bot.tree.command(guild=MY_GUILD)
 async def blush(interaction: discord.Interaction):
     """Post a blushing anime girl o///o"""
-    link = await safebooru_image(bot.session, ["blush", "1girl", "solo"])
-    img = await file_from_url(bot.session, link, "blush.png")
+    link = await nekosbest_url(bot.session, "blush")
+    img = await file_from_url(bot.session, link, "blush.gif")
     await interaction.response.send_message( file=img )
 
 @bot.tree.command(guild=MY_GUILD)
@@ -197,8 +197,8 @@ async def cookie(interaction:discord.Interaction, target:discord.User | None = N
 @bot.tree.command(guild=MY_GUILD)
 async def cry(interaction: discord.Interaction):
     """Post a crying anime girl for when you're sad ._."""
-    link = await safebooru_image(bot.session, ["crying", "1girl", "solo", "sad"])
-    img = await file_from_url(bot.session, link, "crying.png")
+    link = await nekosbest_url(bot.session, 'cry')
+    img = await file_from_url(bot.session, link, "crying.gif")
     await interaction.response.send_message( file=img )
 
 @bot.tree.command(guild=MY_GUILD)
@@ -213,8 +213,8 @@ async def cuddle(interaction:discord.Interaction, target:discord.User | None = N
         elif target == interaction.user:
             await interaction.response.send_message(f"Aww, sorry to see you're all alone {interaction.user.mention} ;-;")
         else:
-            link = await safebooru_image(bot.session, ["cuddling", safebooru_meta["2people"]])
-            img = await file_from_url(bot.session, link, "cuddle.png")
+            link = await nekosbest_url(bot.session, 'cuddle')
+            img = await file_from_url(bot.session, link, "cuddle.gif")
             await interaction.response.send_message(f"{target.mention}, {interaction.user.mention} just cuddled up with you!", file=img)
 
 @bot.tree.command(guild=MY_GUILD)
@@ -228,8 +228,8 @@ async def dab(interaction: discord.Interaction):
 @bot.tree.command(guild=MY_GUILD)
 async def dance(interaction: discord.Interaction):
     """Posts a dancing anime image so you can boogie"""
-    link = await safebooru_image(bot.session, ["dancing"])
-    img = await file_from_url(bot.session, link, "dancing.png")
+    link = await nekosbest_url(bot.session, 'dance')
+    img = await file_from_url(bot.session, link, "dancing.gif")
     await interaction.response.send_message( file=img )
 
 @bot.tree.command(guild=MY_GUILD)
@@ -380,8 +380,8 @@ async def handholding(interaction:discord.Interaction, target:discord.User | Non
         elif target == interaction.user:
             await interaction.response.send_message(f"Aww, sorry to see you're all alone {interaction.user.mention} ;-;")
         else:
-            link = await safebooru_image(bot.session, ["holding_hands", safebooru_meta["2people"]])
-            img = await file_from_url(bot.session, link, "handholding.png")
+            link = await nekosbest_url(bot.session, 'handhold')
+            img = await file_from_url(bot.session, link, "handholding.gif")
             await interaction.response.send_message(f"{target.mention}, {interaction.user.mention} just held hands with you!", file=img)
 
 @bot.tree.command(guild=MY_GUILD)
@@ -396,8 +396,8 @@ async def highfive(interaction:discord.Interaction, target:discord.User | None =
         elif target == interaction.user:
             await interaction.response.send_message(f"Um... {interaction.user.mention}, I think that's called clapping, not a self-high-five >.>")
         else:
-            link = await safebooru_image(bot.session, ["high_five", safebooru_meta["2people"]])
-            img = await file_from_url(bot.session, link, "highfive.png")
+            link = await nekosbest_url(bot.session, 'highfive')
+            img = await file_from_url(bot.session, link, "highfive.gif")
             await interaction.response.send_message(f"{target.mention}, {interaction.user.mention} just high-fived you!", file=img)
 
 @bot.tree.command(guild=MY_GUILD)
@@ -413,8 +413,8 @@ async def hug(interaction:discord.Interaction, target:discord.User | None = None
             img = discord.File("./resources/images/selfhug.gif")
             await interaction.response.send_message(f"Aww, sorry to see you're all alone {interaction.user.mention} ;-;", file=img)
         else:
-            link = await safebooru_image(bot.session, ["hug", safebooru_meta["2people"]])
-            img = await file_from_url(bot.session, link, "hug.png")
+            link = await nekoslife_url(bot.session, 'hug')
+            img = await file_from_url(bot.session, link, "hug.gif")
             await interaction.response.send_message(f"{target.mention}, {interaction.user.mention} just hugged you!", file=img)
 
 @bot.tree.command(guild=MY_GUILD)
@@ -440,8 +440,8 @@ async def kiss(interaction:discord.Interaction, target:discord.User | None = Non
         elif target == interaction.user:
             await interaction.response.send_message(f"Aww, sorry to see you're all alone {interaction.user.mention} ;-;")
         else:
-            link = await safebooru_image(bot.session, ["kiss", safebooru_meta["2people"]])
-            img = await file_from_url(bot.session, link, "kiss.png")
+            link = await nekoslife_url(bot.session, 'kiss')
+            img = await file_from_url(bot.session, link, "kiss.gif")
             await interaction.response.send_message(f"{target.mention}, {interaction.user.mention} just kissed you!", file=img)
 
 @bot.tree.command(guild=MY_GUILD)
@@ -464,8 +464,8 @@ async def lick(interaction:discord.Interaction, target:discord.User | None = Non
 async def lovecalc(interaction: discord.Interaction, person1: discord.User, person2: discord.User):
     """Calculate the love between two people!"""
     if (person1 == person2) and (person1 == interaction.user):
-        link = await safebooru_image(bot.session, ["hug", "comforting", safebooru_meta["2people"]])
-        img = await file_from_url(bot.session, link, "comforting.png")
+        link = await nekoslife_url(bot.session, 'hug')
+        img = await file_from_url(bot.session, link, "hug.gif")
         await interaction.response.send_message("W-wait... are you not sure if you love yourself or not???\nI'm so sorry to hear that ;-;", file=img)
     elif (person1 == bot.user and person2 == interaction.user) or (person2 == bot.user and person1 == interaction.user):
         link = await nekosbest_url(bot.session, "blush")
