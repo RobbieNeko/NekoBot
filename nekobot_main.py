@@ -480,6 +480,16 @@ async def lovecalc(interaction: discord.Interaction, person1: discord.User, pers
         emb = discord.Embed(title=":heart: Love Calculator :heart:", description=f"Love between {person1.mention} and {person2.mention} is at **{percent}%**")
         await interaction.response.send_message(embed=emb)
 
+@bot.tree.command(guild=MY_GUILD)
+@discord.app_commands.describe(target="User you want to target (optional, will default to you)" )
+async def meme(interaction: discord.Interaction, top: str, bottom: str, target: discord.User | discord.Member | None = None):
+    """Make a meme out of a user!"""
+    if target == None:
+        # Default to author
+        target = interaction.user
+    img = await memegen_img(bot.session, target.display_avatar.url, top, bottom)
+    await interaction.response.send_message(file=img)
+
 @bot.command()
 async def sync(ctx):
     await bot.tree.sync(guild=MY_GUILD)

@@ -148,3 +148,13 @@ async def nekosbest_url(session: aiohttp.ClientSession, endpoint: str) -> str:
             return j['results'][0]['url']
         else:
             return await http_error_handler(response.status)
+
+async def memegen_img(session: aiohttp.ClientSession, imgURL: str, top: str, bottom: str) -> discord.File:
+    """Makes a custom meme out of some background image, with top and bottom text"""
+    # It's a small wrapper, but it's a nice wrapper.
+    trans = str.maketrans({'_': "__", '-': "--"})
+    topClean = top.translate(trans)
+    botClean = bottom.translate(trans)
+    url = f"https://api.memegen.link/images/custom/{topClean}/{botClean}.jpg?background={imgURL}"
+    return await file_from_url(session, url, 'meme.jpg')
+            
