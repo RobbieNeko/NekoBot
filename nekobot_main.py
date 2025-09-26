@@ -581,6 +581,44 @@ async def poke(interaction:discord.Interaction, target:discord.User | None = Non
             img = await file_from_url(bot.session, link, "poke.gif")
             await interaction.response.send_message(f"{target.mention}, you just got poked by {interaction.user.mention}!", file=img)
 
+@bot.tree.command(guild=MY_GUILD)
+async def ratewaifu(interaction:discord.Interaction, waifu:str):
+    """Rates your waifu~!"""
+    rand = random.Random(waifu)
+    rating = rand.uniform(0.0, 10.0)
+    await interaction.response.send_message(f"I rate {waifu} {rating:.1f}/10 ^-^")
+
+@bot.tree.command(guild=MY_GUILD)
+async def reverse(interaction: discord.Interaction, text:str):
+    """Reverses text, wow! !wow, txet sesreveR"""
+    # String slicing goes brrrr
+    await interaction.response.send_message(text[::-1])
+
+@bot.tree.command(guild=MY_GUILD)
+async def roll(interaction: discord.Interaction, min: int, max: int):
+    """Rolls a number between min and max"""
+    await interaction.response.send_message(f"{interaction.user.mention} rolled {min}-{max} and got **{random.randint(min,max)}**")
+
+@bot.tree.command(guild=MY_GUILD)
+async def rps(interaction: discord.Interaction, choice: str):
+    """Rock paper scissors!"""
+    choice = choice.lower()
+    options = {"rock":"scissors", "paper":"rock", "scissors":"paper"}
+    if choice == "gun":
+        await interaction.response.send_message("Please don't shoot! It's just a game of Rock Paper Scissors! O.O")
+    elif (choice == "lizard") or (choice == "spock"):
+        await interaction.response.send_message("Sorry, this is Rock Paper Scissors, not Rock Paper Scissors Lizard Spock. I'd love to learn how to play that though! ^-^")
+    elif choice in options:
+        myChoice = random.choice(list(options.keys()))
+        if choice == myChoice:
+            await interaction.response.send_message(f"{choice} v.s. {myChoice}\nIt's a tie!")
+        elif options[choice] == myChoice:
+            await interaction.response.send_message(f"{choice} v.s. {myChoice}\nYou win {interaction.user.mention}! ^-^")
+        else:
+            await interaction.response.send_message(f"{choice} v.s. {myChoice}\nYou lose {interaction.user.mention}! ^-^")
+    else:
+        await interaction.response.send_message("You have to pick 'rock', 'scissors', or 'paper'!")
+
 @bot.command()
 async def sync(ctx):
     await bot.tree.sync(guild=MY_GUILD)
