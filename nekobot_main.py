@@ -527,6 +527,60 @@ async def notwork(interaction:discord.Interaction):
     img = discord.File("./resources/images/notwork.png")
     await interaction.response.send_message(file=img)
 
+@bot.tree.command(guild=MY_GUILD)
+@discord.app_commands.describe(target="User you want to target (optional)" )
+async def pat(interaction:discord.Interaction, target:discord.User | None = None):
+    """Give someone headpats! ^-^"""
+    link = await nekoslife_url(bot.session, 'pat')
+    img = await file_from_url(bot.session, link, "pat.gif")
+    if target == None:
+        await interaction.response.send_message("Are you patting a ghost?")
+    else:
+        if target == bot.user:
+            await interaction.response.send_message(f"Aww, thanks {interaction.user.mention}! ^//^", file=img)
+        elif target == interaction.user:
+            await interaction.response.send_message(f"Um... do you want me to give you headpats, {interaction.user.mention}?\n... because I'd be happy to :pink_heart:", file=img)
+        else:
+            await interaction.response.send_message(f"{target.mention}, you just got headpats from {interaction.user.mention}!", file=img)
+
+@bot.tree.command(guild=MY_GUILD)
+@discord.app_commands.describe(target="User you want to target (optional)" )
+async def pickle(interaction: discord.Interaction, target: discord.User | discord.Member | None = None):
+    """Find out someone's pickle size!"""
+    # Sus command?
+    if target == None:
+        target = interaction.user
+    rand = random.Random(target.id)
+    size = rand.uniform(0.0, 50.0)
+    if target == interaction.user:
+        await interaction.response.send_message(f"{interaction.user.mention}, your pickle size is {size / 1.17:.2f}cm ^-^")
+    elif target == bot.user:
+        await interaction.response.send_message(f"M-my pickle size? U-um... {size / 1.17:.2f}cm >///>")
+    else:
+        await interaction.response.send_message(f"{target.display_name}'s pickle size is {size / 1.17:.2f}cm ^-^")
+
+@bot.tree.command(guild=MY_GUILD)
+async def ping(interaction: discord.Interaction):
+    """Ping!"""
+    # Maybe add actual ping information if it becomes relevant-er
+    await interaction.response.send_message("Pong! :ping_pong:")
+
+@bot.tree.command(guild=MY_GUILD)
+@discord.app_commands.describe(target="User you want to target (optional)" )
+async def poke(interaction:discord.Interaction, target:discord.User | None = None):
+    """Poke someone! ^-^"""
+    if target == None:
+        await interaction.response.send_message("What are you trying to point to?")
+    else:
+        if target == bot.user:
+            await interaction.response.send_message(f"Don't poke me! ;-;")
+        elif target == interaction.user:
+            await interaction.response.send_message(f"Why are you poking yourself? ... you're not fat, {interaction.user.mention}! ;-;")
+        else:
+            link = await nekosbest_url(bot.session, 'poke')
+            img = await file_from_url(bot.session, link, "poke.gif")
+            await interaction.response.send_message(f"{target.mention}, you just got poked by {interaction.user.mention}!", file=img)
+
 @bot.command()
 async def sync(ctx):
     await bot.tree.sync(guild=MY_GUILD)
