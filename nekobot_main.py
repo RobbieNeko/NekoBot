@@ -708,6 +708,46 @@ async def throw(interaction:discord.Interaction, target: discord.User):
         item = random.choice(data['items'])
     await interaction.response.send_message(f"{interaction.user.mention} just threw {item} at {target.mention}!\n**{interaction.user.display_name}:** {authorMsg}\n**{target.display_name}:** {targetMsg}")
 
+@bot.tree.command(guild=MY_GUILD)
+@discord.app_commands.describe(target="User you want to target (optional)" )
+async def tickle(interaction:discord.Interaction, target:discord.User | None = None):
+    """Tickle someone! ^///^"""
+    link = await nekoslife_url(bot.session, 'tickle')
+    img = await file_from_url(bot.session, link, "tickle.gif")
+    if target == None:
+        await interaction.response.send_message("Are you trying to tickle the void?")
+    else:
+        if target == bot.user:
+            await interaction.response.send_message(f"*giggles* :pink_heart:", file=img)
+        elif target == interaction.user:
+            await interaction.response.send_message(f"{interaction.user.mention}, you do know that tickling yourself doesn't work... right?\nDo you want me to tickle you? :3", file=img)
+        else:
+            await interaction.response.send_message(f"{target.mention}, you just got tickled by {interaction.user.mention}!", file=img)
+
+@bot.tree.command(guild=MY_GUILD)
+async def user(interaction: discord.Interaction):
+    """Posts info about your account!"""
+    user = interaction.user
+    emb = discord.Embed(title=f"About {user.name}")
+    emb.add_field(name="Base name", value=user.name)
+    emb.add_field(name="Server name / nickname", value=user.display_name)
+    emb.add_field(name="Account created", value=user.created_at.strftime("%B %d, %Y"))
+    emb.set_thumbnail(url=user.display_avatar.url)
+    await interaction.response.send_message(embed=emb)
+
+@bot.tree.command(guild=MY_GUILD)
+async def wag(interaction: discord.Interaction):
+    """Post a tail-wagging image! ^-^"""
+    link = await safebooru_image(bot.session, ["tail_wagging", "solo"])
+    img = await file_from_url(bot.session, link, 'wag.png')
+    await interaction.response.send_message( file=img )
+
+@bot.tree.command(guild=MY_GUILD)
+async def woop(interaction: discord.Interaction):
+    """Woop woop!"""
+    img = discord.File("./resources/images/woop.gif")
+    await interaction.response.send_message(file=img)
+
 @bot.command()
 async def sync(ctx):
     await bot.tree.sync(guild=MY_GUILD)
