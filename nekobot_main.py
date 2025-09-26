@@ -490,6 +490,43 @@ async def meme(interaction: discord.Interaction, top: str, bottom: str, target: 
     img = await memegen_img(bot.session, target.display_avatar.url, top, bottom)
     await interaction.response.send_message(file=img)
 
+@bot.tree.command(guild=MY_GUILD)
+async def nani(interaction: discord.Interaction):
+    """Posts a confused anime girl"""
+    # Not *exactly* the original command, but good enough
+    url = await safebooru_image(bot.session, ["1girl", "solo", "confused"])
+    img = await file_from_url(bot.session, url, 'nani.png')
+    await interaction.response.send_message(file=img)
+
+@bot.tree.command(guild=MY_GUILD)
+async def neko(interaction: discord.Interaction):
+    """Posts a random neko image! :3"""
+    url = await nekoslife_url(bot.session, 'neko')
+    img = await file_from_url(bot.session, url, 'neko.png')
+    await interaction.response.send_message(file=img)
+
+@bot.tree.command(guild=MY_GUILD)
+@discord.app_commands.describe(target="User you want to target (optional)" )
+async def nom(interaction:discord.Interaction, target:discord.User | None = None):
+    """Nom someone! :3"""
+    if target == None:
+        await interaction.response.send_message("Um... are you trying to nom the air?")
+    else:
+        if target == bot.user:
+            await interaction.response.send_message(f"*Noms {interaction.user.display_name} back* :3")
+        elif target == interaction.user:
+            await interaction.response.send_message(f"Aww, sorry to see you're all alone {interaction.user.mention} ;-;")
+        else:
+            link = await nekosbest_url(bot.session, 'nom')
+            img = await file_from_url(bot.session, link, "nom.gif")
+            await interaction.response.send_message(f"{target.mention}, you just got nommed by {interaction.user.mention}!", file=img)
+
+@bot.tree.command(guild=MY_GUILD)
+async def notwork(interaction:discord.Interaction):
+    """Tell someone 'That's not how it works you lil shit'!"""
+    img = discord.File("./resources/images/notwork.png")
+    await interaction.response.send_message(file=img)
+
 @bot.command()
 async def sync(ctx):
     await bot.tree.sync(guild=MY_GUILD)
