@@ -3,5 +3,7 @@
     "bot-token": "Insert Discord Bot Token Here",
     "support-server-link": "discord.gg/SUPPORTSERVERINVITEHERE",
     "feedback-channel-id": null,
-    "bot-invite-link": "BOTINVITELINKHERE"
+    "bot-invite-link": "BOTINVITELINKHERE",
+    "rule34-user": "Put your user id here",
+    "rule34-key": "Put your generated API key here"
 }

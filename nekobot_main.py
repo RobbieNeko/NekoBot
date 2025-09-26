@@ -619,6 +619,26 @@ async def rps(interaction: discord.Interaction, choice: str):
     else:
         await interaction.response.send_message("You have to pick 'rock', 'scissors', or 'paper'!")
 
+@bot.tree.command(guild = MY_GUILD, nsfw=True)
+@discord.app_commands.describe(tags="A list of tags, separated by spaces." )
+async def rule34(interaction: discord.Interaction, tags: str):
+    """Searches rule34.xxx and returns a random post matching your tags!"""
+    # Assumes the user knows how rule34 tags work
+    tagList = tags.split()
+    for tag in tagList:
+        for ban in BANNED_TAGS:
+            # This catches substrings too, otherwise it'd be shockingly easy to bypass
+            if ban in tag:
+                await interaction.response.send_message("Uh oh, your list of tags contained a tag for content that Discord TOS does not permit!\nSorry, but I can't help you with this search >.>")
+    
+    link = await rule34_image(bot.session, tagList)
+    # All the error messages do not start with 'h'
+    if link[0] == 'h':
+        img = await file_from_url(bot.session, link, "rule34.png")
+        await interaction.response.send_message(file=img)
+    else:
+        await interaction.response.send_message(link)
+
 @bot.command()
 async def sync(ctx):
     await bot.tree.sync(guild=MY_GUILD)

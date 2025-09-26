@@ -1,6 +1,7 @@
 import discord
 import aiohttp
 import base64
+import json
 from io import BytesIO
 
 type Link = str
@@ -158,3 +159,32 @@ async def memegen_img(session: aiohttp.ClientSession, imgURL: str, top: str, bot
     url = f"https://api.memegen.link/images/custom/{topClean}/{botClean}.jpg?background={imgURL}"
     return await file_from_url(session, url, 'meme.jpg')
             
+async def rule34_image(session:aiohttp.ClientSession, tags: list[str]) -> Link:
+    """Returns either a URL to an image on rule34, 'Empty', or an HTTP error code number (as string)"""
+    baseurl = "https://api.rule34.xxx/index.php"
+    # rule34 mandates api key stuff
+    with open('./config.json') as config:
+        j = json.load(config)
+        USER_ID = j['rule34-user']
+        API_KEY = j['rule34-key']
+
+    # Using parameters instead of manually constructing the string for the sake of example / trying it out
+    par = {
+        "page": "dapi",
+        "s": "post",
+        "q": "index",
+        "json": '1',
+        "tags": ' '.join(['sort:random'] + tags), # Joining with + gets escaped, but joining with spaces gets made into joining with +. WHY HTTP, WHY.
+        "api_key": API_KEY,
+        "user_id": USER_ID
+    }
+
+    async with session.get(baseurl, params=par) as response:
+        if response.status == 200:
+            img = await response.json()
+            if img != {}:
+                return img[0]['file_url']
+            else:
+                return 'Empty'
+        else:
+            return f'{response.status}'
