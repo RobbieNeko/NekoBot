@@ -678,6 +678,36 @@ async def slap(interaction:discord.Interaction, target:discord.User | None = Non
             img = await file_from_url(bot.session, link, "slap.gif")
             await interaction.response.send_message(f"{target.mention}, you just got slapped by {interaction.user.mention}!", file=img)
 
+@bot.tree.command(guild=MY_GUILD)
+async def slots(interaction: discord.Interaction):
+    """Play the slots!"""
+    # No actual prizes included ;P
+    icons = ['red_apple', 'cherries', 'tangerine', 'watermelon', 'lemon', 'peach']
+    a, b, c = random.choices(icons, k=3)
+    if (a == b == c):
+        await interaction.response.send_message(f"{interaction.user.mention} just played the slots...\n:{a}: :{b}: :{c}:\n... and just won! ^-^")
+    elif (a == b) or (a == c) or (b == c):
+        await interaction.response.send_message(f"{interaction.user.mention} just played the slots...\n:{a}: :{b}: :{c}:\n... and nearly won! :3")
+    else:
+        await interaction.response.send_message(f"{interaction.user.mention} just played the slots...\n:{a}: :{b}: :{c}:\n... and lost.")
+
+@bot.tree.command(guild=MY_GUILD)
+async def source(interaction: discord.Interaction):
+    """Get a link to the source code!"""
+    # Any derivatives should change this to a link to their own code
+    await interaction.response.send_message("Here's my source code! ^-^\nhttps://github.com/RobbieNeko/NekoBot")
+
+@bot.tree.command(guild=MY_GUILD)
+@discord.app_commands.describe(target="User you want to target (optional)" )
+async def throw(interaction:discord.Interaction, target: discord.User):
+    """Throw an item at someone! >:3"""
+    with open('./resources/responses/throw.json') as file:
+        data = json.load(file)
+        authorMsg = random.choice(data['author'])
+        targetMsg = random.choice(data['target'])
+        item = random.choice(data['items'])
+    await interaction.response.send_message(f"{interaction.user.mention} just threw {item} at {target.mention}!\n**{interaction.user.display_name}:** {authorMsg}\n**{target.display_name}:** {targetMsg}")
+
 @bot.command()
 async def sync(ctx):
     await bot.tree.sync(guild=MY_GUILD)

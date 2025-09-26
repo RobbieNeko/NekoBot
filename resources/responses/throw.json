@@ -1,0 +1,39 @@
+{
+  "author": [
+    "Take this!",
+    "Lookout below!",
+    "Think fast, chucklenuts!",
+    "Dodge this!",
+    "Here, catch!",
+    "Class, here's our demonstration of projectile motion!",
+    "I've got a killer knuckle-ball!",
+    "For three!",
+    "Parry this, thou filthy casual.",
+    "You'll never dodge your taxes if you can't dodge this!"
+  ],
+  "target": [
+    "Ow! Why'd you throw that at me?",
+    "Ow! Sounnuva-",
+    "*catches it* Nice try, bitch!",
+    "*ducks* You missed!",
+    "Get over here so I can shove this up your-",
+    "MotherFUCKER!",
+    "*just stands there and takes it*",
+    "*opens mouth and swallows it whole* Thanks for the meal!",
+    "Was that supposed to hurt?"
+  ],
+  "items": [
+    ":apple:",
+    ":coconut:",
+    ":tomato:",
+    ":softball:",
+    ":boomerang:",
+    ":mobile_phone:",
+    ":wrench:",
+    ":floppy_disk:",
+    ":hammer:",
+    ":knife:",
+    ":pill:",
+    ":soap:"
+  ]
+}
