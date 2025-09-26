@@ -34,6 +34,7 @@ with open("./resources/banned_tags.json") as file:
 
 intents = discord.Intents.default()
 intents.message_content = True
+intents.members = True
 bot = NekoBot(command_prefix="$", intents=intents)
 
 @bot.tree.command(guild=MY_GUILD)
@@ -639,9 +640,53 @@ async def rule34(interaction: discord.Interaction, tags: str):
     else:
         await interaction.response.send_message(link)
 
+@bot.tree.command(guild=MY_GUILD)
+async def scroll(interaction: discord.Interaction, text: str):
+    """Post the scroll of truth!"""
+    img = await file_from_url(bot.session, f"https://api.alexflipnote.dev/scroll?text={text}", 'scroll.png')
+    await interaction.response.send_message(file=img)
+
+@bot.tree.command(guild=MY_GUILD)
+async def server(interaction: discord.Interaction):
+    """Posts info about the server!"""
+    if interaction.guild != None:
+        guild = interaction.guild
+        emb = discord.Embed(title=f"Information about {guild.name}")
+        emb.add_field(name="Server name", value=guild.name)
+        emb.add_field(name="Server ID", value=guild.id)
+        emb.add_field(name="Members", value=guild.member_count)
+        emb.add_field(name="Owner", value=guild.owner.display_name if guild.owner != None else "Unknown")
+        if guild.icon != None:
+            emb.set_thumbnail(url=guild.icon.url)
+        await interaction.response.send_message(embed=emb)
+    else:
+        await interaction.response.send_message("Sorry, I can't seem to figure out what guild you're in! o.o")
+
+@bot.tree.command(guild=MY_GUILD)
+@discord.app_commands.describe(target="User you want to target (optional)" )
+async def slap(interaction:discord.Interaction, target:discord.User | None = None):
+    """Slap someone! o.o"""
+    if target == None:
+        await interaction.response.send_message("Are you trying to fan yourself... or slap a ghost?")
+    else:
+        if target == bot.user:
+            await interaction.response.send_message(f"Ow! Hey, why did you do that {interaction.user.mention}?!? ;-;")
+        elif target == interaction.user:
+            await interaction.response.send_message(f"{interaction.user.mention}, why are you slapping yourself?? o.o")
+        else:
+            link = await nekoslife_url(bot.session, 'slap')
+            img = await file_from_url(bot.session, link, "slap.gif")
+            await interaction.response.send_message(f"{target.mention}, you just got slapped by {interaction.user.mention}!", file=img)
+
 @bot.command()
 async def sync(ctx):
     await bot.tree.sync(guild=MY_GUILD)
+
+@bot.command()
+async def changestatus(ctx, status):
+    # Only the owner(s) should be able to do this
+    if bot.is_owner(ctx.author):
+        await bot.change_presence(activity=discord.Game(status))
 
 bot.run(MY_TOKEN)
 
