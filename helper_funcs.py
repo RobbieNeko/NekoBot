@@ -7,7 +7,7 @@ from io import BytesIO
 type Link = str
 
 
-async def safebooru_image(session:aiohttp.ClientSession, tags: list[str]) -> Link:
+async def safebooru_url(session:aiohttp.ClientSession, tags: list[str]) -> Link:
     """Returns either a URL to an image on safebooru, 'Empty', or an HTTP error code number (as string)"""
     baseurl = "https://safebooru.org/index.php"
     # Using parameters instead of manually constructing the string for the sake of example / trying it out
@@ -162,7 +162,7 @@ async def memegen_img(session: aiohttp.ClientSession, imgURL: str, top: str, bot
     url = f"https://api.memegen.link/images/custom/{topClean}/{botClean}.jpg?background={imgURL}"
     return await file_from_url(session, url, 'meme.jpg')
             
-async def rule34_image(session:aiohttp.ClientSession, tags: list[str]) -> Link:
+async def rule34_url(session:aiohttp.ClientSession, tags: list[str]) -> Link:
     """Returns either a URL to an image on rule34, 'Empty', or an HTTP error code number (as string)"""
     baseurl = "https://api.rule34.xxx/index.php"
     # rule34 mandates api key stuff

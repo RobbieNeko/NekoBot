@@ -253,7 +253,7 @@ async def cuddle(interaction:discord.Interaction, target:discord.User | None = N
 @bot.tree.command(guild=MY_GUILD)
 async def dab(interaction: discord.Interaction):
     """Dab on the haters"""
-    link = await safebooru_image(bot.session, ["dab_(dance)", "solo"])
+    link = await safebooru_url(bot.session, ["dab_(dance)", "solo"])
     if link[0] == 'h':
         emb = discord.Embed(description=random.choice(["Dabs on the haters", "Dabbing is sooo 2016", "#DabNeverDied"]))
         emb.set_image(url=link)
@@ -512,7 +512,7 @@ async def lick(interaction:discord.Interaction, target:discord.User | None = Non
         elif target == interaction.user:
             await interaction.response.send_message(f"Are you... trying to lick yourself clean like a cat? o.o")
         else:
-            link = await safebooru_image(bot.session, ["licking_another's_face", safebooru_meta["2people"]]) # Weird tag acquired straight from website search
+            link = await safebooru_url(bot.session, ["licking_another's_face", safebooru_meta["2people"]]) # Weird tag acquired straight from website search
             if link[0] == 'h':
                 img = await file_from_url(bot.session, link, "lick.png")
                 await interaction.response.send_message(f"{target.mention}, you just got licked by {interaction.user.mention}!", file=img)
@@ -559,7 +559,7 @@ async def meme(interaction: discord.Interaction, top: str, bottom: str, target: 
 async def nani(interaction: discord.Interaction):
     """Posts a confused anime girl"""
     # Not *exactly* the original command, but good enough
-    link = await safebooru_image(bot.session, ["1girl", "solo", "confused"])
+    link = await safebooru_url(bot.session, ["1girl", "solo", "confused"])
     if link[0] == 'h':
         img = await file_from_url(bot.session, link, 'nani.png')
         await interaction.response.send_message(file=img)
@@ -716,7 +716,7 @@ async def rule34(interaction: discord.Interaction, tags: str):
             if ban in tag:
                 await interaction.response.send_message("Uh oh, your list of tags contained a tag for content that Discord TOS does not permit!\nSorry, but I can't help you with this search >.>")
     
-    link = await rule34_image(bot.session, tagList)
+    link = await rule34_url(bot.session, tagList)
     # All the error messages do not start with 'h'
     if link[0] == 'h':
         img = await file_from_url(bot.session, link, "rule34.png")
@@ -833,7 +833,7 @@ async def user(interaction: discord.Interaction):
 @bot.tree.command(guild=MY_GUILD)
 async def wag(interaction: discord.Interaction):
     """Post a tail-wagging image! ^-^"""
-    link = await safebooru_image(bot.session, ["tail_wagging", "solo"])
+    link = await safebooru_url(bot.session, ["tail_wagging", "solo"])
     if link[0] == 'h':
         img = await file_from_url(bot.session, link, 'wag.png')
         await interaction.response.send_message(file=img)
