@@ -19,6 +19,9 @@ safebooru_meta = {
     "2people": "( ( 1girl 1boy ) ~ 2girls ~ 2boys )" # Actually means >= 2 people, not exactly 2 people
 }
 
+# Change this to whatever your source code's link is, if you run a modified version
+SOURCE_CODE_URL = "https://github.com/RobbieNeko/NekoBot"
+
 with open("./config.json") as file:
     config = json.load(file)
     # discord.Object throws an error if fed a None, so ternary handles it gracefully
@@ -40,10 +43,11 @@ bot = NekoBot(command_prefix="$", intents=intents)
 @bot.tree.command(guild=MY_GUILD)
 async def about(interaction: discord.Interaction):
     """Prints basic 'about' info"""
-    info = discord.Embed(title='About Nekobot')
+    info = discord.Embed(title='About NekoBot')
     info.add_field(name="Developer(s)", value="RosaAeterna (aka NekoRobbie)")
     info.add_field(name="Library", value="Discord.py")
-    info.add_field(name="License", value="GNU GPL v3")
+    info.add_field(name="License", value="GNU AGPL v3")
+    info.add_field(name="Inspiration", value="KawaiiBot (kotlin version)")
     await interaction.response.send_message(embed=info)
 
 @bot.tree.command(guild=MY_GUILD)
@@ -695,7 +699,7 @@ async def slots(interaction: discord.Interaction):
 async def source(interaction: discord.Interaction):
     """Get a link to the source code!"""
     # Any derivatives should change this to a link to their own code
-    await interaction.response.send_message("Here's my source code! ^-^\nhttps://github.com/RobbieNeko/NekoBot")
+    await interaction.response.send_message("Here's my source code! ^-^\n{SOURCE_CODE_URL}")
 
 @bot.tree.command(guild=MY_GUILD)
 @discord.app_commands.describe(target="User you want to target (optional)" )
