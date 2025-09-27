@@ -5,7 +5,6 @@ import json
 from io import BytesIO
 
 type Link = str
-type Attribution = str
 
 
 async def safebooru_image(session:aiohttp.ClientSession, tags: list[str]) -> Link:
