@@ -28,7 +28,8 @@ async def safebooru_image(session:aiohttp.ClientSession, tags: list[str]) -> Lin
             else:
                 return 'Empty'
         else:
-            return f'{response.status}'
+            print(f"{response.url} returned {response.status}")
+            return await http_error_handler(response.status)
 
 async def http_error_handler(code:int) -> str:
     """Returns an error message depending on the HTTP error code"""
@@ -52,18 +53,19 @@ async def http_error_handler(code:int) -> str:
         case 504:
             return "Uh oh, looks like the gateway can't get a response out of the website right now. Try again later?"
         case _:
-            return "Unrecognized HTTP error recieved! Please alert the bot developer so they can start handling it."
+            return f"Unrecognized HTTP error recieved (HTTP {code})! Please alert the bot developer so they can start handling it."
 
 async def file_from_url(session:aiohttp.ClientSession, url:str, name: str)-> discord.File:
     """Constructs a file from a URL using aiohttp and BytesIO.
     'name' should contain a file extension because Discord doesn't do mimetype/magic numbers"""
     async with session.get(url) as response:
         buffer = BytesIO(await response.read())
-    return discord.File(fp=buffer, filename=name)
+        return discord.File(fp=buffer, filename=name)
 
 async def nekoslife_url(session: aiohttp.ClientSession, endpoint:str, params: str | None = None) -> str:
     """Hits an endpoint at nekoslife
-    `endpoint` must be from the list on https://github.com/Nekos-life/nekos-dot-life """
+    `endpoint` must be from the list on https://nekos.life/api/v2/endpoints (and not deprecated).
+    'lewd' returns exactly one image, and never any other image. """
 
     urlEndpoints = ["smug", "baka", "tickle", "slap", "poke", "pat", "neko", "ngif", "meow", "lizard", "kiss", "hug", "fox_girl", "feed", "cuddle", "kemonomimi", "holo", "wallpaper", "goose", "gecg", "avatar", "waifu", "8ball"]
     txtEndpoints = ["why", "cat", "fact"]
@@ -100,8 +102,8 @@ async def nekoslife_url(session: aiohttp.ClientSession, endpoint:str, params: st
                         # Eventually this should just be a case of "process of elimination'd option"
                         return "Undefined endpoint response"
         else:
-            print(f"Response: {response.status}")
-            return "Recieved some HTTP error"
+            print(f"{response.url} returned {response.status}")
+            return await http_error_handler(response.status)
 
 async def flipnoteAPIs(session: aiohttp.ClientSession, api: Link) -> str:
     """ Hits up an original alexflipnote API.
@@ -112,8 +114,8 @@ async def flipnoteAPIs(session: aiohttp.ClientSession, api: Link) -> str:
             j = await response.json()
             return j['file']
         else:
-            print(f"Response: {response.status}")
-            return 'Recieved some HTTP error'
+            print(f"{response.url} returned {response.status}")
+            return await http_error_handler(response.status)
 
 async def e621API(session: aiohttp.ClientSession, tags: list[str], username: str | None = None, apikey: str | None = None) -> str:
     """Polls the e621 API"""
@@ -137,6 +139,7 @@ async def e621API(session: aiohttp.ClientSession, tags: list[str], username: str
         elif response.status == 204:
             return "No results returned! o.o"
         else:
+            print(f"{response.url} returned {response.status}")
             return await http_error_handler(response.status)
 
 async def nekosbest_url(session: aiohttp.ClientSession, endpoint: str) -> str:
@@ -148,6 +151,7 @@ async def nekosbest_url(session: aiohttp.ClientSession, endpoint: str) -> str:
             j = await response.json()
             return j['results'][0]['url']
         else:
+            print(f"{response.url} returned {response.status}")
             return await http_error_handler(response.status)
 
 async def memegen_img(session: aiohttp.ClientSession, imgURL: str, top: str, bottom: str) -> discord.File:
@@ -187,4 +191,5 @@ async def rule34_image(session:aiohttp.ClientSession, tags: list[str]) -> Link:
             else:
                 return 'Empty'
         else:
-            return f'{response.status}'
+            print(f"{response.url} returned {response.status}")
+            return await http_error_handler(response.status)

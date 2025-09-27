@@ -66,15 +66,22 @@ async def baka(interaction: discord.Interaction, target: discord.User|None = Non
     else:
         if target == bot.user:
             link = await nekosbest_url(bot.session, 'cry')
-            img = await file_from_url(bot.session, link, "crying.gif")
-            await interaction.response.send_message("I-I'm not a baka, Y-YOU'RE A BAKA!! ;-;", file=img)
+            if link[0] == 'h':
+                img = await file_from_url(bot.session, link, "crying.gif")
+                await interaction.response.send_message("I-I'm not a baka, Y-YOU'RE A BAKA!! ;-;", file=img)
+            else:
+                # Unlike a lot of situations, this doesn't actually need to print the error
+                await interaction.response.send_message("I-I'm not a baka, Y-YOU'RE A BAKA!! ;-;")
         elif target == interaction.user:
             img = discord.File("./resources/images/selfbaka.jpg")
             await interaction.response.send_message("You're such a baka you just called yourself a baka!", file=img)
         else:
             link = await nekosbest_url(bot.session, 'baka')
-            img = await file_from_url(bot.session, link, "baka.gif")
-            await interaction.response.send_message(f"{interaction.user.mention} just called {target.mention} a baka!", file=img)
+            if link[0] == 'h':
+                img = await file_from_url(bot.session, link, "baka.gif")
+                await interaction.response.send_message(f"{interaction.user.mention} just called {target.mention} a baka!", file=img)
+            else:
+                await interaction.response.send_message(f"{interaction.user.mention} just called {target.mention} a baka!")
 
 @bot.tree.command(guild=MY_GUILD)
 @discord.app_commands.describe(target="User you want to give a beer (optional)" )
@@ -90,9 +97,12 @@ async def beer(interaction:discord.Interaction, target: discord.User | None = No
 @bot.tree.command(guild=MY_GUILD)
 async def birb(interaction: discord.Interaction):
     """Display a birb!"""
-    url = await flipnoteAPIs(bot.session, "https://api.alexflipnote.dev/birb")
-    img = await file_from_url(bot.session, url, 'birb.png')
-    await interaction.response.send_message(file=img)
+    link = await flipnoteAPIs(bot.session, "https://api.alexflipnote.dev/birb")
+    if link[0] == 'h':
+        img = await file_from_url(bot.session, link, 'birb.png')
+        await interaction.response.send_message(file=img)
+    else:
+        await interaction.response.send_message(link) # Actually sends error message
 
 @bot.tree.command(guild=MY_GUILD)
 @discord.app_commands.describe(target="User you want to target (optional)" )
@@ -107,15 +117,21 @@ async def bite(interaction: discord.Interaction, target: discord.User | None = N
             await interaction.response.send_message("W-why would you want to... bite yourself?")
         else:
             link = await nekosbest_url(bot.session, 'bite')
-            img = await file_from_url(bot.session, link, "bite.gif")
-            await interaction.response.send_message(f"{target.mention}, you just got bitten by {interaction.user.mention}!", file=img)
+            if link[0] == 'h':
+                img = await file_from_url(bot.session, link, "bite.gif")
+                await interaction.response.send_message(f"{target.mention}, you just got bitten by {interaction.user.mention}!", file=img)
+            else:
+                await interaction.response.send_message(f"{target.mention}, you just got bitten by {interaction.user.mention}!")
 
 @bot.tree.command(guild=MY_GUILD)
 async def blush(interaction: discord.Interaction):
     """Post a blushing anime girl o///o"""
     link = await nekosbest_url(bot.session, "blush")
-    img = await file_from_url(bot.session, link, "blush.gif")
-    await interaction.response.send_message( file=img )
+    if link[0] == 'h':
+        img = await file_from_url(bot.session, link, "blush.gif")
+        await interaction.response.send_message(file=img)
+    else:
+        await interaction.response.send_message(link)
 
 @bot.tree.command(guild=MY_GUILD)
 @discord.app_commands.describe(target="User you want to target (optional)" )
@@ -149,15 +165,19 @@ async def botsupport(interaction:discord.Interaction):
 async def calling(interaction: discord.Interaction, txt: str):
     """Generates a Tom & Jerry 'calling' meme"""
     # This one returns an image directly instead of a link
+    # This does mean that there is no error handling
     img = await file_from_url(bot.session, f"https://api.alexflipnote.dev/calling?&text={txt}", 'calling.png')
     await interaction.response.send_message(file=img)
 
 @bot.tree.command(guild=MY_GUILD)
 async def cat(interaction: discord.Interaction):
     """Posts a random cat image! :3"""
-    url = await nekoslife_url(bot.session, 'meow')
-    img = await file_from_url(bot.session, url, 'cat.png')
-    await interaction.response.send_message(file=img)
+    link = await nekoslife_url(bot.session, 'meow')
+    if link[0] == 'h':
+        img = await file_from_url(bot.session, link, 'cat.png')
+        await interaction.response.send_message(file=img)
+    else:
+        await interaction.response.send_message(link)
 
 @bot.tree.command(guild=MY_GUILD)
 @discord.app_commands.describe(choices="A string of choices, with each choice separated by a |" )
@@ -173,12 +193,14 @@ async def choose(interaction: discord.Interaction, choices: str | None = None):
             await interaction.response.send_message(resp.replace('$X', chose))
         
 @bot.tree.command(guild=MY_GUILD)
-async def coffee(interation:discord.Interaction):
+async def coffee(interaction:discord.Interaction):
     """Sends a coffee image"""
-    url = await flipnoteAPIs(bot.session, "https://coffee.alexflipnote.dev/random.json")
-    img = await file_from_url(bot.session, url, "coffee.png")
-
-    await interation.response.send_message(file=img)
+    link = await flipnoteAPIs(bot.session, "https://coffee.alexflipnote.dev/random.json")
+    if link[0] == 'h':
+        img = await file_from_url(bot.session, link, "coffee.png")
+        await interaction.response.send_message(file=img)
+    else:
+        await interaction.response.send_message(link)
 
 @bot.tree.command(guild=MY_GUILD)
 async def coinflip(interaction:discord.Interaction):
@@ -203,8 +225,11 @@ async def cookie(interaction:discord.Interaction, target:discord.User | None = N
 async def cry(interaction: discord.Interaction):
     """Post a crying anime girl for when you're sad ._."""
     link = await nekosbest_url(bot.session, 'cry')
-    img = await file_from_url(bot.session, link, "crying.gif")
-    await interaction.response.send_message( file=img )
+    if link[0] == 'h':
+        img = await file_from_url(bot.session, link, "crying.gif")
+        await interaction.response.send_message( file=img )
+    else:
+        await interaction.response.send_message(link)
 
 @bot.tree.command(guild=MY_GUILD)
 @discord.app_commands.describe(target="User you want to target (optional)" )
@@ -219,23 +244,32 @@ async def cuddle(interaction:discord.Interaction, target:discord.User | None = N
             await interaction.response.send_message(f"Aww, sorry to see you're all alone {interaction.user.mention} ;-;")
         else:
             link = await nekosbest_url(bot.session, 'cuddle')
-            img = await file_from_url(bot.session, link, "cuddle.gif")
-            await interaction.response.send_message(f"{target.mention}, {interaction.user.mention} just cuddled up with you!", file=img)
+            if link[0] == 'h':
+                img = await file_from_url(bot.session, link, "cuddle.gif")
+                await interaction.response.send_message(f"{target.mention}, {interaction.user.mention} just cuddled up with you!", file=img)
+            else:
+                await interaction.response.send_message(f"{target.mention}, {interaction.user.mention} just cuddled up with you!")
 
 @bot.tree.command(guild=MY_GUILD)
 async def dab(interaction: discord.Interaction):
     """Dab on the haters"""
     link = await safebooru_image(bot.session, ["dab_(dance)", "solo"])
-    emb = discord.Embed(description=random.choice(["Dabs on the haters", "Dabbing is sooo 2016", "#DabNeverDied"]))
-    emb.set_image(url=link)
-    await interaction.response.send_message( embed=emb )
+    if link[0] == 'h':
+        emb = discord.Embed(description=random.choice(["Dabs on the haters", "Dabbing is sooo 2016", "#DabNeverDied"]))
+        emb.set_image(url=link)
+        await interaction.response.send_message(embed=emb)
+    else:
+        await interaction.response.send_message(link)
 
 @bot.tree.command(guild=MY_GUILD)
 async def dance(interaction: discord.Interaction):
     """Posts a dancing anime image so you can boogie"""
     link = await nekosbest_url(bot.session, 'dance')
-    img = await file_from_url(bot.session, link, "dancing.gif")
-    await interaction.response.send_message( file=img )
+    if link[0] == 'h':
+        img = await file_from_url(bot.session, link, "dancing.gif")
+        await interaction.response.send_message(file=img)
+    else:
+        await interaction.response.send_message(link)
 
 @bot.tree.command(guild=MY_GUILD)
 @discord.app_commands.describe(txt1="Text in the searchbar" )
@@ -244,15 +278,17 @@ async def didyoumean(interation:discord.Interaction, txt1: str, txt2:str):
     """Sends an image of a search asking if you meant something else"""
     # Directly returns image
     img = await file_from_url(bot.session, f"https://api.alexflipnote.dev/didyoumean?&top={txt1}&bottom={txt2}", "didyoumean.png")
-
     await interation.response.send_message(file=img)
 
 @bot.tree.command(guild=MY_GUILD)
 async def dog(interaction: discord.Interaction):
     """Display a dog!"""
-    url = await flipnoteAPIs(bot.session, "https://api.alexflipnote.dev/dogs")
-    img = await file_from_url(bot.session, url, 'dog.png')
-    await interaction.response.send_message(file=img)
+    link = await flipnoteAPIs(bot.session, "https://api.alexflipnote.dev/dogs")
+    if link[0] == 'h':
+        img = await file_from_url(bot.session, link, 'dog.png')
+        await interaction.response.send_message(file=img)
+    else:
+        await interaction.response.send_message(link)
 
 @bot.tree.command(guild=MY_GUILD)
 async def doot(interaction: discord.Interaction):
@@ -305,8 +341,11 @@ async def echo(interaction: discord.Interaction, text: str):
 async def eightball(interaction: discord.Interaction, question: str):
     """Asks the magic 8ball a question!"""
     link = await nekoslife_url(bot.session, f"8ball", f"text={question}")
-    img = await file_from_url(bot.session, link, '8ball.png')
-    await interaction.response.send_message(file=img)
+    if link[0] == 'h':
+        img = await file_from_url(bot.session, link, '8ball.png')
+        await interaction.response.send_message(file=img)
+    else:
+        await interaction.response.send_message(link)
 
 @bot.tree.command(guild=MY_GUILD)
 async def f(interaction: discord.Interaction, reason: str | None = None):
@@ -386,8 +425,11 @@ async def handholding(interaction:discord.Interaction, target:discord.User | Non
             await interaction.response.send_message(f"Aww, sorry to see you're all alone {interaction.user.mention} ;-;")
         else:
             link = await nekosbest_url(bot.session, 'handhold')
-            img = await file_from_url(bot.session, link, "handholding.gif")
-            await interaction.response.send_message(f"{target.mention}, {interaction.user.mention} just held hands with you!", file=img)
+            if link[0] == 'h':
+                img = await file_from_url(bot.session, link, "handholding.gif")
+                await interaction.response.send_message(f"{target.mention}, {interaction.user.mention} just held hands with you!", file=img)
+            else:
+                await interaction.response.send_message(f"{target.mention}, {interaction.user.mention} just held hands with you!")
 
 @bot.tree.command(guild=MY_GUILD)
 @discord.app_commands.describe(target="User you want to target (optional)" )
@@ -402,8 +444,11 @@ async def highfive(interaction:discord.Interaction, target:discord.User | None =
             await interaction.response.send_message(f"Um... {interaction.user.mention}, I think that's called clapping, not a self-high-five >.>")
         else:
             link = await nekosbest_url(bot.session, 'highfive')
-            img = await file_from_url(bot.session, link, "highfive.gif")
-            await interaction.response.send_message(f"{target.mention}, {interaction.user.mention} just high-fived you!", file=img)
+            if link[0] == 'h':
+                img = await file_from_url(bot.session, link, "highfive.gif")
+                await interaction.response.send_message(f"{target.mention}, {interaction.user.mention} just high-fived you!", file=img)
+            else:
+                await interaction.response.send_message(f"{target.mention}, {interaction.user.mention} just high-fived you!")
 
 @bot.tree.command(guild=MY_GUILD)
 @discord.app_commands.describe(target="User you want to target (optional)" )
@@ -419,8 +464,11 @@ async def hug(interaction:discord.Interaction, target:discord.User | None = None
             await interaction.response.send_message(f"Aww, sorry to see you're all alone {interaction.user.mention} ;-;", file=img)
         else:
             link = await nekoslife_url(bot.session, 'hug')
-            img = await file_from_url(bot.session, link, "hug.gif")
-            await interaction.response.send_message(f"{target.mention}, {interaction.user.mention} just hugged you!", file=img)
+            if link[0] == 'h':
+                img = await file_from_url(bot.session, link, "hug.gif")
+                await interaction.response.send_message(f"{target.mention}, {interaction.user.mention} just hugged you!", file=img)
+            else:
+                await interaction.response.send_message(f"{target.mention}, {interaction.user.mention} just hugged you!")
 
 @bot.tree.command(guild=MY_GUILD)
 async def invite(interaction: discord.Interaction):
@@ -446,8 +494,11 @@ async def kiss(interaction:discord.Interaction, target:discord.User | None = Non
             await interaction.response.send_message(f"Aww, sorry to see you're all alone {interaction.user.mention} ;-;")
         else:
             link = await nekoslife_url(bot.session, 'kiss')
-            img = await file_from_url(bot.session, link, "kiss.gif")
-            await interaction.response.send_message(f"{target.mention}, {interaction.user.mention} just kissed you!", file=img)
+            if link[0] == 'h':
+                img = await file_from_url(bot.session, link, "kiss.gif")
+                await interaction.response.send_message(f"{target.mention}, {interaction.user.mention} just kissed you!", file=img)
+            else:
+                await interaction.response.send_message(f"{target.mention}, {interaction.user.mention} just kissed you!")
 
 @bot.tree.command(guild=MY_GUILD)
 @discord.app_commands.describe(target="User you want to target (optional)" )
@@ -462,20 +513,29 @@ async def lick(interaction:discord.Interaction, target:discord.User | None = Non
             await interaction.response.send_message(f"Are you... trying to lick yourself clean like a cat? o.o")
         else:
             link = await safebooru_image(bot.session, ["licking_another's_face", safebooru_meta["2people"]]) # Weird tag acquired straight from website search
-            img = await file_from_url(bot.session, link, "lick.png")
-            await interaction.response.send_message(f"{target.mention}, you just got licked by {interaction.user.mention}!", file=img)
+            if link[0] == 'h':
+                img = await file_from_url(bot.session, link, "lick.png")
+                await interaction.response.send_message(f"{target.mention}, you just got licked by {interaction.user.mention}!", file=img)
+            else:
+                await interaction.response.send_message(f"{target.mention}, you just got licked by {interaction.user.mention}!")
 
 @bot.tree.command(guild=MY_GUILD)
 async def lovecalc(interaction: discord.Interaction, person1: discord.User, person2: discord.User):
     """Calculate the love between two people!"""
     if (person1 == person2) and (person1 == interaction.user):
         link = await nekoslife_url(bot.session, 'hug')
-        img = await file_from_url(bot.session, link, "hug.gif")
-        await interaction.response.send_message("W-wait... are you not sure if you love yourself or not???\nI'm so sorry to hear that ;-;", file=img)
+        if link[0] == 'h':
+            img = await file_from_url(bot.session, link, "hug.gif")
+            await interaction.response.send_message("W-wait... are you not sure if you love yourself or not???\nI'm so sorry to hear that ;-;", file=img)
+        else:
+            await interaction.response.send_message("W-wait... are you not sure if you love yourself or not???\nI'm so sorry to hear that ;-;")
     elif (person1 == bot.user and person2 == interaction.user) or (person2 == bot.user and person1 == interaction.user):
         link = await nekosbest_url(bot.session, "blush")
-        img = await file_from_url(bot.session, link, 'blush.gif')
-        await interaction.response.send_message(f"U-um, are you trying to tell me something {interaction.user.display_name}???", file=img)
+        if link[0] == 'h':
+            img = await file_from_url(bot.session, link, 'blush.gif')
+            await interaction.response.send_message(f"U-um, are you trying to tell me something {interaction.user.display_name}???", file=img)
+        else:
+            await interaction.response.send_message(f"U-um, are you trying to tell me something {interaction.user.display_name}???")
     elif (person1 == bot.user) or (person2 == bot.user):
         await interaction.response.send_message(f"{interaction.user}... are you trying to ship me and them?? >///>")
     else:
@@ -499,16 +559,22 @@ async def meme(interaction: discord.Interaction, top: str, bottom: str, target: 
 async def nani(interaction: discord.Interaction):
     """Posts a confused anime girl"""
     # Not *exactly* the original command, but good enough
-    url = await safebooru_image(bot.session, ["1girl", "solo", "confused"])
-    img = await file_from_url(bot.session, url, 'nani.png')
-    await interaction.response.send_message(file=img)
+    link = await safebooru_image(bot.session, ["1girl", "solo", "confused"])
+    if link[0] == 'h':
+        img = await file_from_url(bot.session, link, 'nani.png')
+        await interaction.response.send_message(file=img)
+    else:
+        await interaction.response.send_message(link)
 
 @bot.tree.command(guild=MY_GUILD)
 async def neko(interaction: discord.Interaction):
     """Posts a random neko image! :3"""
-    url = await nekoslife_url(bot.session, 'neko')
-    img = await file_from_url(bot.session, url, 'neko.png')
-    await interaction.response.send_message(file=img)
+    link = await nekoslife_url(bot.session, 'neko')
+    if link[0] == 'h':
+        img = await file_from_url(bot.session, link, 'neko.png')
+        await interaction.response.send_message(file=img)
+    else:
+        await interaction.response.send_message(link)
 
 @bot.tree.command(guild=MY_GUILD)
 @discord.app_commands.describe(target="User you want to target (optional)" )
@@ -523,8 +589,11 @@ async def nom(interaction:discord.Interaction, target:discord.User | None = None
             await interaction.response.send_message(f"Aww, sorry to see you're all alone {interaction.user.mention} ;-;")
         else:
             link = await nekosbest_url(bot.session, 'nom')
-            img = await file_from_url(bot.session, link, "nom.gif")
-            await interaction.response.send_message(f"{target.mention}, you just got nommed by {interaction.user.mention}!", file=img)
+            if link[0] == 'h':
+                img = await file_from_url(bot.session, link, "nom.gif")
+                await interaction.response.send_message(f"{target.mention}, you just got nommed by {interaction.user.mention}!", file=img)
+            else:
+                await interaction.response.send_message(f"{target.mention}, you just got nommed by {interaction.user.mention}!")
 
 @bot.tree.command(guild=MY_GUILD)
 async def notwork(interaction:discord.Interaction):
@@ -536,17 +605,25 @@ async def notwork(interaction:discord.Interaction):
 @discord.app_commands.describe(target="User you want to target (optional)" )
 async def pat(interaction:discord.Interaction, target:discord.User | None = None):
     """Give someone headpats! ^-^"""
-    link = await nekoslife_url(bot.session, 'pat')
-    img = await file_from_url(bot.session, link, "pat.gif")
     if target == None:
         await interaction.response.send_message("Are you patting a ghost?")
     else:
-        if target == bot.user:
-            await interaction.response.send_message(f"Aww, thanks {interaction.user.mention}! ^//^", file=img)
-        elif target == interaction.user:
-            await interaction.response.send_message(f"Um... do you want me to give you headpats, {interaction.user.mention}?\n... because I'd be happy to :pink_heart:", file=img)
+        link = await nekoslife_url(bot.session, 'pat')
+        if link[0] == 'h':
+            img = await file_from_url(bot.session, link, "pat.gif")
+            if target == bot.user:
+                await interaction.response.send_message(f"Aww, thanks {interaction.user.mention}! ^//^", file=img)
+            elif target == interaction.user:
+                await interaction.response.send_message(f"Um... do you want me to give you headpats, {interaction.user.mention}?\n... because I'd be happy to :pink_heart:", file=img)
+            else:
+                await interaction.response.send_message(f"{target.mention}, you just got headpats from {interaction.user.mention}!", file=img)
         else:
-            await interaction.response.send_message(f"{target.mention}, you just got headpats from {interaction.user.mention}!", file=img)
+            if target == bot.user:
+                await interaction.response.send_message(f"Aww, thanks {interaction.user.mention}! ^//^")
+            elif target == interaction.user:
+                await interaction.response.send_message(f"Um... do you want me to give you headpats, {interaction.user.mention}?\n... because I'd be happy to :pink_heart:")
+            else:
+                await interaction.response.send_message(f"{target.mention}, you just got headpats from {interaction.user.mention}!",)
 
 @bot.tree.command(guild=MY_GUILD)
 @discord.app_commands.describe(target="User you want to target (optional)" )
@@ -583,8 +660,11 @@ async def poke(interaction:discord.Interaction, target:discord.User | None = Non
             await interaction.response.send_message(f"Why are you poking yourself? ... you're not fat, {interaction.user.mention}! ;-;")
         else:
             link = await nekosbest_url(bot.session, 'poke')
-            img = await file_from_url(bot.session, link, "poke.gif")
-            await interaction.response.send_message(f"{target.mention}, you just got poked by {interaction.user.mention}!", file=img)
+            if link[0] == 'h':
+                img = await file_from_url(bot.session, link, "poke.gif")
+                await interaction.response.send_message(f"{target.mention}, you just got poked by {interaction.user.mention}!", file=img)
+            else:
+                await interaction.response.send_message(f"{target.mention}, you just got poked by {interaction.user.mention}!")
 
 @bot.tree.command(guild=MY_GUILD)
 async def ratewaifu(interaction:discord.Interaction, waifu:str):
@@ -679,8 +759,11 @@ async def slap(interaction:discord.Interaction, target:discord.User | None = Non
             await interaction.response.send_message(f"{interaction.user.mention}, why are you slapping yourself?? o.o")
         else:
             link = await nekoslife_url(bot.session, 'slap')
-            img = await file_from_url(bot.session, link, "slap.gif")
-            await interaction.response.send_message(f"{target.mention}, you just got slapped by {interaction.user.mention}!", file=img)
+            if link[0] == 'h':
+                img = await file_from_url(bot.session, link, "slap.gif")
+                await interaction.response.send_message(f"{target.mention}, you just got slapped by {interaction.user.mention}!", file=img)
+            else:
+                await interaction.response.send_message(f"{target.mention}, you just got slapped by {interaction.user.mention}!")
 
 @bot.tree.command(guild=MY_GUILD)
 async def slots(interaction: discord.Interaction):
@@ -716,17 +799,25 @@ async def throw(interaction:discord.Interaction, target: discord.User):
 @discord.app_commands.describe(target="User you want to target (optional)" )
 async def tickle(interaction:discord.Interaction, target:discord.User | None = None):
     """Tickle someone! ^///^"""
-    link = await nekoslife_url(bot.session, 'tickle')
-    img = await file_from_url(bot.session, link, "tickle.gif")
     if target == None:
         await interaction.response.send_message("Are you trying to tickle the void?")
     else:
-        if target == bot.user:
-            await interaction.response.send_message(f"*giggles* :pink_heart:", file=img)
-        elif target == interaction.user:
-            await interaction.response.send_message(f"{interaction.user.mention}, you do know that tickling yourself doesn't work... right?\nDo you want me to tickle you? :3", file=img)
+        link = await nekoslife_url(bot.session, 'tickle')
+        if link[0] == 'h':
+            img = await file_from_url(bot.session, link, "tickle.gif")
+            if target == bot.user:
+                await interaction.response.send_message(f"*giggles* :pink_heart:", file=img)
+            elif target == interaction.user:
+                await interaction.response.send_message(f"{interaction.user.mention}, you do know that tickling yourself doesn't work... right?\nDo you want me to tickle you? :3", file=img)
+            else:
+                await interaction.response.send_message(f"{target.mention}, you just got tickled by {interaction.user.mention}!", file=img)
         else:
-            await interaction.response.send_message(f"{target.mention}, you just got tickled by {interaction.user.mention}!", file=img)
+            if target == bot.user:
+                await interaction.response.send_message(f"*giggles* :pink_heart:")
+            elif target == interaction.user:
+                await interaction.response.send_message(f"{interaction.user.mention}, you do know that tickling yourself doesn't work... right?\nDo you want me to tickle you? :3")
+            else:
+                await interaction.response.send_message(f"{target.mention}, you just got tickled by {interaction.user.mention}!")
 
 @bot.tree.command(guild=MY_GUILD)
 async def user(interaction: discord.Interaction):
@@ -743,8 +834,11 @@ async def user(interaction: discord.Interaction):
 async def wag(interaction: discord.Interaction):
     """Post a tail-wagging image! ^-^"""
     link = await safebooru_image(bot.session, ["tail_wagging", "solo"])
-    img = await file_from_url(bot.session, link, 'wag.png')
-    await interaction.response.send_message( file=img )
+    if link[0] == 'h':
+        img = await file_from_url(bot.session, link, 'wag.png')
+        await interaction.response.send_message(file=img)
+    else:
+        await interaction.response.send_message(link)
 
 @bot.tree.command(guild=MY_GUILD)
 async def woop(interaction: discord.Interaction):
