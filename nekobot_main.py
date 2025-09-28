@@ -846,7 +846,9 @@ async def woop(interaction: discord.Interaction):
 
 @bot.command()
 async def sync(ctx):
-    await bot.tree.sync()
+    # Only the owner(s) should be able to do this
+    if bot.is_owner(ctx.author):
+        await bot.tree.sync()
 
 @bot.command()
 async def changestatus(ctx, status):
