@@ -24,8 +24,6 @@ SOURCE_CODE_URL = "https://github.com/RobbieNeko/NekoBot"
 
 with open("./config.json") as file:
     config = json.load(file)
-    # discord.Object throws an error if fed a None, so ternary handles it gracefully
-    MY_GUILD = discord.Object(id=config['guild-id']) if config['guild-id'] != None else None
     MY_TOKEN = config['bot-token']
     SUPPORT_INVITE = config['support-server-link']
     FEEDBACK_CHANNEL = config['feedback-channel-id']
@@ -40,7 +38,7 @@ intents.message_content = True
 intents.members = True
 bot = NekoBot(command_prefix="$", intents=intents)
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 async def about(interaction: discord.Interaction):
     """Prints basic 'about' info"""
     info = discord.Embed(title='About NekoBot')
@@ -50,14 +48,14 @@ async def about(interaction: discord.Interaction):
     info.add_field(name="Inspiration", value="KawaiiBot (kotlin version)")
     await interaction.response.send_message(embed=info)
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 async def avatar(interaction: discord.Interaction):
     """Shows your avatar"""
     disp = discord.Embed(description=f"{interaction.user.display_name}'s Avatar\n[Full Image]({interaction.user.display_avatar.url})")
     disp.set_thumbnail(url=interaction.user.display_avatar.url)
     await interaction.response.send_message(embed=disp)
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 @discord.app_commands.describe(target="User you want to target (optional)" )
 async def baka(interaction: discord.Interaction, target: discord.User|None = None):
     """Calls the target a baka!"""
@@ -83,7 +81,7 @@ async def baka(interaction: discord.Interaction, target: discord.User|None = Non
             else:
                 await interaction.response.send_message(f"{interaction.user.mention} just called {target.mention} a baka!")
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 @discord.app_commands.describe(target="User you want to give a beer (optional)" )
 async def beer(interaction:discord.Interaction, target: discord.User | None = None):
     """Give someone a beer!"""
@@ -94,7 +92,7 @@ async def beer(interaction:discord.Interaction, target: discord.User | None = No
     else:
         await interaction.response.send_message(f"{target.mention}, you just got a :beer: from {interaction.user.mention}!")
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 async def birb(interaction: discord.Interaction):
     """Display a birb!"""
     link = await flipnoteAPIs(bot.session, "https://api.alexflipnote.dev/birb")
@@ -104,7 +102,7 @@ async def birb(interaction: discord.Interaction):
     else:
         await interaction.response.send_message(link) # Actually sends error message
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 @discord.app_commands.describe(target="User you want to target (optional)" )
 async def bite(interaction: discord.Interaction, target: discord.User | None = None):
     """Bite someone >:3"""
@@ -123,7 +121,7 @@ async def bite(interaction: discord.Interaction, target: discord.User | None = N
             else:
                 await interaction.response.send_message(f"{target.mention}, you just got bitten by {interaction.user.mention}!")
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 async def blush(interaction: discord.Interaction):
     """Post a blushing anime girl o///o"""
     link = await nekosbest_url(bot.session, "blush")
@@ -133,7 +131,7 @@ async def blush(interaction: discord.Interaction):
     else:
         await interaction.response.send_message(link)
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 @discord.app_commands.describe(target="User you want to target (optional)" )
 async def boot(interaction: discord.Interaction, target: discord.User | None = None):
     """Throw a boot at someone! >:)"""
@@ -151,7 +149,7 @@ async def boot(interaction: discord.Interaction, target: discord.User | None = N
                 txt = random.choice(resp['someone'])
                 await interaction.response.send_message(txt.replace("USER", interaction.user.display_name).replace("TARGET", target.display_name))
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 async def botsupport(interaction:discord.Interaction):
     """Links to the bot's server!"""
     # FIXME: Update with actual server later
@@ -160,7 +158,7 @@ async def botsupport(interaction:discord.Interaction):
     else:
         await interaction.response.send_message(f"{interaction.user.mention}, you're already in my home silly~ :heart:")
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 @discord.app_commands.describe(txt="Text of the meme" )
 async def calling(interaction: discord.Interaction, txt: str):
     """Generates a Tom & Jerry 'calling' meme"""
@@ -169,7 +167,7 @@ async def calling(interaction: discord.Interaction, txt: str):
     img = await file_from_url(bot.session, f"https://api.alexflipnote.dev/calling?&text={txt}", 'calling.png')
     await interaction.response.send_message(file=img)
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 async def cat(interaction: discord.Interaction):
     """Posts a random cat image! :3"""
     link = await nekoslife_url(bot.session, 'meow')
@@ -179,7 +177,7 @@ async def cat(interaction: discord.Interaction):
     else:
         await interaction.response.send_message(link)
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 @discord.app_commands.describe(choices="A string of choices, with each choice separated by a |" )
 async def choose(interaction: discord.Interaction, choices: str | None = None):
     if choices == None:
@@ -192,7 +190,7 @@ async def choose(interaction: discord.Interaction, choices: str | None = None):
             chose = random.choice(choicesList)
             await interaction.response.send_message(resp.replace('$X', chose))
         
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 async def coffee(interaction:discord.Interaction):
     """Sends a coffee image"""
     link = await flipnoteAPIs(bot.session, "https://coffee.alexflipnote.dev/random.json")
@@ -202,12 +200,12 @@ async def coffee(interaction:discord.Interaction):
     else:
         await interaction.response.send_message(link)
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 async def coinflip(interaction:discord.Interaction):
     """Flips a coin, for all your flipping needs!"""
     await interaction.response.send_message(f"{interaction.user.mention} flipped a coin and got {random.choice(['Heads', 'Tails'])}")
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 @discord.app_commands.describe(target="User you want to target (optional)" )
 async def cookie(interaction:discord.Interaction, target:discord.User | None = None):
     """Give someone a cookie :3"""
@@ -221,7 +219,7 @@ async def cookie(interaction:discord.Interaction, target:discord.User | None = N
         else:
             await interaction.response.send_message(f"{target.mention}, you just got given a :cookie: by {interaction.user.mention}!")
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 async def cry(interaction: discord.Interaction):
     """Post a crying anime girl for when you're sad ._."""
     link = await nekosbest_url(bot.session, 'cry')
@@ -231,7 +229,7 @@ async def cry(interaction: discord.Interaction):
     else:
         await interaction.response.send_message(link)
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 @discord.app_commands.describe(target="User you want to target (optional)" )
 async def cuddle(interaction:discord.Interaction, target:discord.User | None = None):
     """Cuddle up to someone ^-^"""
@@ -250,7 +248,7 @@ async def cuddle(interaction:discord.Interaction, target:discord.User | None = N
             else:
                 await interaction.response.send_message(f"{target.mention}, {interaction.user.mention} just cuddled up with you!")
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 async def dab(interaction: discord.Interaction):
     """Dab on the haters"""
     link = await safebooru_url(bot.session, ["dab_(dance)", "solo"])
@@ -261,7 +259,7 @@ async def dab(interaction: discord.Interaction):
     else:
         await interaction.response.send_message(link)
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 async def dance(interaction: discord.Interaction):
     """Posts a dancing anime image so you can boogie"""
     link = await nekosbest_url(bot.session, 'dance')
@@ -271,7 +269,7 @@ async def dance(interaction: discord.Interaction):
     else:
         await interaction.response.send_message(link)
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 @discord.app_commands.describe(txt1="Text in the searchbar" )
 @discord.app_commands.describe(txt2="'Did you mean to search for' text under searchbar" )
 async def didyoumean(interation:discord.Interaction, txt1: str, txt2:str):
@@ -280,7 +278,7 @@ async def didyoumean(interation:discord.Interaction, txt1: str, txt2:str):
     img = await file_from_url(bot.session, f"https://api.alexflipnote.dev/didyoumean?&top={txt1}&bottom={txt2}", "didyoumean.png")
     await interation.response.send_message(file=img)
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 async def dog(interaction: discord.Interaction):
     """Display a dog!"""
     link = await flipnoteAPIs(bot.session, "https://api.alexflipnote.dev/dogs")
@@ -290,13 +288,13 @@ async def dog(interaction: discord.Interaction):
     else:
         await interaction.response.send_message(link)
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 async def doot(interaction: discord.Interaction):
     """Doot!"""
     img = discord.File("./resources/images/doot.gif")
     await interaction.response.send_message(file=img)
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 @discord.app_commands.describe(txt1="Top text" )
 @discord.app_commands.describe(txt2="Bottom text" )
 async def drake(interation:discord.Interaction, txt1: str, txt2:str):
@@ -306,14 +304,14 @@ async def drake(interation:discord.Interaction, txt1: str, txt2:str):
 
     await interation.response.send_message(file=img)
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 async def duck(interaction: discord.Interaction):
     """Returns a random duck!"""
     # This one returns an image directly instead of a link
     img = await file_from_url(bot.session, f"https://random-d.uk/api/v2/randomimg", 'duck.png')
     await interaction.response.send_message(file=img)
 
-@bot.tree.command(guild = MY_GUILD, nsfw=True)
+@bot.tree.command(nsfw=True)
 @discord.app_commands.describe(tags="A list of tags, separated by spaces." )
 async def e621(interaction: discord.Interaction, tags: str):
     """Searches E621 and returns a random post matching your tags!"""
@@ -333,11 +331,11 @@ async def e621(interaction: discord.Interaction, tags: str):
     else:
         await interaction.response.send_message(link)
 
-@bot.tree.command(guild = MY_GUILD)
+@bot.tree.command()
 async def echo(interaction: discord.Interaction, text: str):
     await interaction.response.send_message(f"{interaction.user.mention}: {text}")
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 async def eightball(interaction: discord.Interaction, question: str):
     """Asks the magic 8ball a question!"""
     link = await nekoslife_url(bot.session, f"8ball", f"text={question}")
@@ -347,7 +345,7 @@ async def eightball(interaction: discord.Interaction, question: str):
     else:
         await interaction.response.send_message(link)
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 async def f(interaction: discord.Interaction, reason: str | None = None):
     """Press F to pay respects"""
     heart_colors: list[str] = ["pink", "red", "orange", "yellow", "green", "light_blue", "blue", "purple"]
@@ -356,14 +354,14 @@ async def f(interaction: discord.Interaction, reason: str | None = None):
     else:
         await interaction.response.send_message(f"{interaction.user.mention} just paid their respects for {reason} :{random.choice(heart_colors)}_heart:")
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 async def facts(interaction:discord.Interaction, text:str):
     """Makes whatever you say into a fact!"""
     # Directly returns image
     img = await file_from_url(bot.session, f"https://api.alexflipnote.dev/facts?text={text}", "facts.png")
     await interaction.response.send_message(file=img)
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 @discord.app_commands.describe(feedback="Feedback! Please remember that you're sending this to a person :3" )
 async def feedback(interaction:discord.Interaction, feedback: str):
     """Sends feedback to the person running the bot!"""
@@ -375,7 +373,7 @@ async def feedback(interaction:discord.Interaction, feedback: str):
     else:
         await interaction.response.send_message("Uh oh, it looks like the person running the bot didn't set the feedback channel correctly!\nAnd... you can't report it to them using the feedback command.\nSo, um, I guess find them yourself? Sorry I can't be more helpful ;-;")
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 @discord.app_commands.describe(target="User you want to target (optional)" )
 async def flower(interaction: discord.Interaction, target: discord.User | None = None) :
     """Give someone a flower!"""
@@ -391,7 +389,7 @@ async def flower(interaction: discord.Interaction, target: discord.User | None =
     else:
         await interaction.response.send_message(f"{target.mention}, you just got a :{fleur}: from {interaction.user.mention}!")
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 @discord.app_commands.describe(target="User you want to target (optional)" )
 async def fruit(interaction: discord.Interaction, target: discord.User | None = None) :
     """Give someone some fruit!"""
@@ -406,13 +404,13 @@ async def fruit(interaction: discord.Interaction, target: discord.User | None = 
     else:
         await interaction.response.send_message(f"{target.mention}, you just got a :{froot}: from {interaction.user.mention}!")
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 async def funfact(interaction: discord.Interaction):
     """Get a fun fact!"""
     fact = await nekoslife_url(bot.session, "fact")
     await interaction.response.send_message("Fun fact: " + fact)
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 @discord.app_commands.describe(target="User you want to target (optional)" )
 async def handholding(interaction:discord.Interaction, target:discord.User | None = None):
     """Engage in some handholding! :3"""
@@ -431,7 +429,7 @@ async def handholding(interaction:discord.Interaction, target:discord.User | Non
             else:
                 await interaction.response.send_message(f"{target.mention}, {interaction.user.mention} just held hands with you!")
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 @discord.app_commands.describe(target="User you want to target (optional)" )
 async def highfive(interaction:discord.Interaction, target:discord.User | None = None):
     """High five someone!"""
@@ -450,7 +448,7 @@ async def highfive(interaction:discord.Interaction, target:discord.User | None =
             else:
                 await interaction.response.send_message(f"{target.mention}, {interaction.user.mention} just high-fived you!")
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 @discord.app_commands.describe(target="User you want to target (optional)" )
 async def hug(interaction:discord.Interaction, target:discord.User | None = None):
     """Hug someone ^//^"""
@@ -470,18 +468,18 @@ async def hug(interaction:discord.Interaction, target:discord.User | None = None
             else:
                 await interaction.response.send_message(f"{target.mention}, {interaction.user.mention} just hugged you!")
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 async def invite(interaction: discord.Interaction):
     """Get an invite link to invite me to your server!"""
     # Note: You will start running into restrictions at 100 servers with the bot in them unless you verify.
     await interaction.response.send_message("Here's a link to invite me to your server!\n"+BOT_INVITE, ephemeral=True)
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 async def joinedat(interaction: discord.Interaction, user: discord.Member):
     """Get the date that someone joined the server!"""
     await interaction.response.send_message(f"{user.display_name} joined {user.joined_at.strftime("%B %d, %Y") if user.joined_at != None else "before date and time were a thing! o.O"}")
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 @discord.app_commands.describe(target="User you want to target (optional)" )
 async def kiss(interaction:discord.Interaction, target:discord.User | None = None):
     """Kiss someone ^////^"""
@@ -500,7 +498,7 @@ async def kiss(interaction:discord.Interaction, target:discord.User | None = Non
             else:
                 await interaction.response.send_message(f"{target.mention}, {interaction.user.mention} just kissed you!")
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 @discord.app_commands.describe(target="User you want to target (optional)" )
 async def lick(interaction:discord.Interaction, target:discord.User | None = None):
     """Lick someone o///o"""
@@ -519,7 +517,7 @@ async def lick(interaction:discord.Interaction, target:discord.User | None = Non
             else:
                 await interaction.response.send_message(f"{target.mention}, you just got licked by {interaction.user.mention}!")
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 async def lovecalc(interaction: discord.Interaction, person1: discord.User, person2: discord.User):
     """Calculate the love between two people!"""
     if (person1 == person2) and (person1 == interaction.user):
@@ -545,7 +543,7 @@ async def lovecalc(interaction: discord.Interaction, person1: discord.User, pers
         emb = discord.Embed(title=":heart: Love Calculator :heart:", description=f"Love between {person1.mention} and {person2.mention} is at **{percent}%**")
         await interaction.response.send_message(embed=emb)
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 @discord.app_commands.describe(target="User you want to target (optional, will default to you)" )
 async def meme(interaction: discord.Interaction, top: str, bottom: str, target: discord.User | discord.Member | None = None):
     """Make a meme out of a user!"""
@@ -555,7 +553,7 @@ async def meme(interaction: discord.Interaction, top: str, bottom: str, target: 
     img = await memegen_img(bot.session, target.display_avatar.url, top, bottom)
     await interaction.response.send_message(file=img)
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 async def nani(interaction: discord.Interaction):
     """Posts a confused anime girl"""
     # Not *exactly* the original command, but good enough
@@ -566,7 +564,7 @@ async def nani(interaction: discord.Interaction):
     else:
         await interaction.response.send_message(link)
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 async def neko(interaction: discord.Interaction):
     """Posts a random neko image! :3"""
     link = await nekoslife_url(bot.session, 'neko')
@@ -576,7 +574,7 @@ async def neko(interaction: discord.Interaction):
     else:
         await interaction.response.send_message(link)
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 @discord.app_commands.describe(target="User you want to target (optional)" )
 async def nom(interaction:discord.Interaction, target:discord.User | None = None):
     """Nom someone! :3"""
@@ -595,13 +593,13 @@ async def nom(interaction:discord.Interaction, target:discord.User | None = None
             else:
                 await interaction.response.send_message(f"{target.mention}, you just got nommed by {interaction.user.mention}!")
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 async def notwork(interaction:discord.Interaction):
     """Tell someone 'That's not how it works you lil shit'!"""
     img = discord.File("./resources/images/notwork.png")
     await interaction.response.send_message(file=img)
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 @discord.app_commands.describe(target="User you want to target (optional)" )
 async def pat(interaction:discord.Interaction, target:discord.User | None = None):
     """Give someone headpats! ^-^"""
@@ -625,7 +623,7 @@ async def pat(interaction:discord.Interaction, target:discord.User | None = None
             else:
                 await interaction.response.send_message(f"{target.mention}, you just got headpats from {interaction.user.mention}!",)
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 @discord.app_commands.describe(target="User you want to target (optional)" )
 async def pickle(interaction: discord.Interaction, target: discord.User | discord.Member | None = None):
     """Find out someone's pickle size!"""
@@ -641,13 +639,13 @@ async def pickle(interaction: discord.Interaction, target: discord.User | discor
     else:
         await interaction.response.send_message(f"{target.display_name}'s pickle size is {size / 1.17:.2f}cm ^-^")
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 async def ping(interaction: discord.Interaction):
     """Ping!"""
     # Maybe add actual ping information if it becomes relevant-er
     await interaction.response.send_message("Pong! :ping_pong:")
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 @discord.app_commands.describe(target="User you want to target (optional)" )
 async def poke(interaction:discord.Interaction, target:discord.User | None = None):
     """Poke someone! ^-^"""
@@ -666,25 +664,25 @@ async def poke(interaction:discord.Interaction, target:discord.User | None = Non
             else:
                 await interaction.response.send_message(f"{target.mention}, you just got poked by {interaction.user.mention}!")
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 async def ratewaifu(interaction:discord.Interaction, waifu:str):
     """Rates your waifu~!"""
     rand = random.Random(waifu)
     rating = rand.uniform(0.0, 10.0)
     await interaction.response.send_message(f"I rate {waifu} {rating:.1f}/10 ^-^")
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 async def reverse(interaction: discord.Interaction, text:str):
     """Reverses text, wow! !wow, txet sesreveR"""
     # String slicing goes brrrr
     await interaction.response.send_message(text[::-1])
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 async def roll(interaction: discord.Interaction, min: int, max: int):
     """Rolls a number between min and max"""
     await interaction.response.send_message(f"{interaction.user.mention} rolled {min}-{max} and got **{random.randint(min,max)}**")
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 async def rps(interaction: discord.Interaction, choice: str):
     """Rock paper scissors!"""
     choice = choice.lower()
@@ -704,7 +702,7 @@ async def rps(interaction: discord.Interaction, choice: str):
     else:
         await interaction.response.send_message("You have to pick 'rock', 'scissors', or 'paper'!")
 
-@bot.tree.command(guild = MY_GUILD, nsfw=True)
+@bot.tree.command(nsfw=True)
 @discord.app_commands.describe(tags="A list of tags, separated by spaces." )
 async def rule34(interaction: discord.Interaction, tags: str):
     """Searches rule34.xxx and returns a random post matching your tags!"""
@@ -724,13 +722,13 @@ async def rule34(interaction: discord.Interaction, tags: str):
     else:
         await interaction.response.send_message(link)
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 async def scroll(interaction: discord.Interaction, text: str):
     """Post the scroll of truth!"""
     img = await file_from_url(bot.session, f"https://api.alexflipnote.dev/scroll?text={text}", 'scroll.png')
     await interaction.response.send_message(file=img)
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 async def server(interaction: discord.Interaction):
     """Posts info about the server!"""
     if interaction.guild != None:
@@ -746,7 +744,7 @@ async def server(interaction: discord.Interaction):
     else:
         await interaction.response.send_message("Sorry, I can't seem to figure out what guild you're in! o.o")
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 @discord.app_commands.describe(target="User you want to target (optional)" )
 async def slap(interaction:discord.Interaction, target:discord.User | None = None):
     """Slap someone! o.o"""
@@ -765,7 +763,7 @@ async def slap(interaction:discord.Interaction, target:discord.User | None = Non
             else:
                 await interaction.response.send_message(f"{target.mention}, you just got slapped by {interaction.user.mention}!")
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 async def slots(interaction: discord.Interaction):
     """Play the slots!"""
     # No actual prizes included ;P
@@ -778,13 +776,13 @@ async def slots(interaction: discord.Interaction):
     else:
         await interaction.response.send_message(f"{interaction.user.mention} just played the slots...\n:{a}: :{b}: :{c}:\n... and lost.")
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 async def source(interaction: discord.Interaction):
     """Get a link to the source code!"""
     # Any derivatives should change this to a link to their own code
     await interaction.response.send_message("Here's my source code! ^-^\n{SOURCE_CODE_URL}")
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 @discord.app_commands.describe(target="User you want to target (optional)" )
 async def throw(interaction:discord.Interaction, target: discord.User):
     """Throw an item at someone! >:3"""
@@ -795,7 +793,7 @@ async def throw(interaction:discord.Interaction, target: discord.User):
         item = random.choice(data['items'])
     await interaction.response.send_message(f"{interaction.user.mention} just threw {item} at {target.mention}!\n**{interaction.user.display_name}:** {authorMsg}\n**{target.display_name}:** {targetMsg}")
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 @discord.app_commands.describe(target="User you want to target (optional)" )
 async def tickle(interaction:discord.Interaction, target:discord.User | None = None):
     """Tickle someone! ^///^"""
@@ -819,7 +817,7 @@ async def tickle(interaction:discord.Interaction, target:discord.User | None = N
             else:
                 await interaction.response.send_message(f"{target.mention}, you just got tickled by {interaction.user.mention}!")
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 async def user(interaction: discord.Interaction):
     """Posts info about your account!"""
     user = interaction.user
@@ -830,7 +828,7 @@ async def user(interaction: discord.Interaction):
     emb.set_thumbnail(url=user.display_avatar.url)
     await interaction.response.send_message(embed=emb)
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 async def wag(interaction: discord.Interaction):
     """Post a tail-wagging image! ^-^"""
     link = await safebooru_url(bot.session, ["tail_wagging", "solo"])
@@ -840,7 +838,7 @@ async def wag(interaction: discord.Interaction):
     else:
         await interaction.response.send_message(link)
 
-@bot.tree.command(guild=MY_GUILD)
+@bot.tree.command()
 async def woop(interaction: discord.Interaction):
     """Woop woop!"""
     img = discord.File("./resources/images/woop.gif")
@@ -848,7 +846,7 @@ async def woop(interaction: discord.Interaction):
 
 @bot.command()
 async def sync(ctx):
-    await bot.tree.sync(guild=MY_GUILD)
+    await bot.tree.sync()
 
 @bot.command()
 async def changestatus(ctx, status):
