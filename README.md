@@ -23,4 +23,4 @@ Requirements to have certain commands functional:
 ### Final notes
 NekoBot is licensed under the AGPL 3.0 license
 
-We politely ask that any copyright or licensing issues/concerns be brought up with the project lead before jumping **straight** to DMCA notices and other threats. Trust us, we want to remedy those issues just as quickly as you want us to!
+We politely ask that any copyright or licensing issues/concerns be brought up with the project lead before jumping **straight** to DMCA notices and other threats. Trust us, we want to remedy those issues just as quickly as you do!
