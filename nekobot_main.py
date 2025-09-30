@@ -368,8 +368,9 @@ async def feedback(interaction:discord.Interaction, feedback: str):
     # Unsure if I actually prefer this or github issues tbh
     channel = bot.get_channel(FEEDBACK_CHANNEL)
     if type(channel) == discord.TextChannel:
-        await channel.send(feedback)
+        # Order of operations is important, does not work when order is reversed!
         await interaction.response.send_message("Feedback sent!", ephemeral=True)
+        await channel.send(feedback)
     else:
         await interaction.response.send_message("Uh oh, it looks like the person running the bot didn't set the feedback channel correctly!\nAnd... you can't report it to them using the feedback command.\nSo, um, I guess find them yourself? Sorry I can't be more helpful ;-;")
 
