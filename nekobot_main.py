@@ -21,6 +21,7 @@ safebooru_meta = {
 
 # Change this to whatever your source code's link is, if you run a modified version
 SOURCE_CODE_URL = "https://github.com/RobbieNeko/NekoBot"
+SUPPORT_SERVER_ID = "REPLACE WITH SUPPORT SERVER ID"
 
 with open("./config.json") as file:
     config = json.load(file)
@@ -152,11 +153,10 @@ async def boot(interaction: discord.Interaction, target: discord.User | None = N
 @bot.tree.command()
 async def botsupport(interaction:discord.Interaction):
     """Links to the bot's server!"""
-    # FIXME: Update with actual server later
-    if (interaction.guild == None) or (interaction.guild_id != 526466889380003851): # REPLACE WITH SUPPORT SERVER ID
-        await interaction.response.send_message(f"Here you go {interaction.user.mention}: {SUPPORT_INVITE}")
+    if (interaction.guild == None) or (interaction.guild_id != SUPPORT_SERVER_ID):
+        await interaction.response.send_message(f"Here you go {interaction.user.mention}: {SUPPORT_INVITE}", ephemeral=True)
     else:
-        await interaction.response.send_message(f"{interaction.user.mention}, you're already in my home silly~ :heart:")
+        await interaction.response.send_message(f"{interaction.user.mention}, you're already in my home silly~ :heart:", ephemeral=True)
 
 @bot.tree.command()
 @discord.app_commands.describe(txt="Text of the meme" )
