@@ -134,7 +134,10 @@ async def e621API(session: aiohttp.ClientSession, tags: list[str], username: str
     async with session.get(searchURL, headers=headers) as response:
         if response.status == 200:
             j = await response.json()
-            return j['posts'][0]['file']['url']
+            if (len(j['posts']) > 0):
+                return j['posts'][0]['file']['url']
+            else:
+                return "No results returned! o.o"
         elif response.status == 204:
             return "No results returned! o.o"
         else:
@@ -185,10 +188,10 @@ async def rule34_url(session:aiohttp.ClientSession, tags: list[str]) -> Link:
     async with session.get(baseurl, params=par) as response:
         if response.status == 200:
             img = await response.json()
-            if img != {}:
+            if (img != {}) and not (img is None):
                 return img[0]['file_url']
             else:
-                return 'Empty'
+                return "Sorry, I couldn't find any results for that! >.>"
         else:
             print(f"{response.url} returned {response.status}")
             return await http_error_handler(response.status)
