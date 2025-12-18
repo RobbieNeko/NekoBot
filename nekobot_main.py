@@ -29,6 +29,7 @@ with open("./config.json") as file:
     SUPPORT_INVITE = config['support-server-link']
     FEEDBACK_CHANNEL = config['feedback-channel-id']
     BOT_INVITE = config['bot-invite-link']
+    RULE34_NOAI = config['rule34-noAI']
 
 with open("./resources/banned_tags.json") as file:
     # Banned because Discord doesn't like them, and in many countries they could get you in hot water
@@ -709,6 +710,8 @@ async def rule34(interaction: discord.Interaction, tags: str):
     """Searches rule34.xxx and returns a random post matching your tags!"""
     # Assumes the user knows how rule34 tags work
     tagList = tags.split()
+    if RULE34_NOAI:
+        tagList.append("-ai_*") # Wildcard to catch all AI
     for tag in tagList:
         for ban in BANNED_TAGS:
             # This catches substrings too, otherwise it'd be shockingly easy to bypass
