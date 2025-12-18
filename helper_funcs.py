@@ -25,7 +25,8 @@ async def safebooru_url(session:aiohttp.ClientSession, tags: list[str]) -> Link:
             if img != {}:
                 return img[0]['file_url']
             else:
-                return 'Empty'
+                print(f"safebooru search with params \"{par}\" returned no valid results")
+                return "Uh oh, something went wrong and I couldn't find an image! >.>"
         else:
             print(f"{response.url} returned {response.status}")
             return await http_error_handler(response.status)
@@ -137,8 +138,10 @@ async def e621API(session: aiohttp.ClientSession, tags: list[str], username: str
             if (len(j['posts']) > 0):
                 return j['posts'][0]['file']['url']
             else:
+                print(f"e621 search with tags \"{tags}\" returned no valid results")
                 return "No results returned! o.o"
         elif response.status == 204:
+            print(f"e621 search with tags \"{tags}\" returned no valid results")
             return "No results returned! o.o"
         else:
             print(f"{response.url} returned {response.status}")
@@ -191,6 +194,7 @@ async def rule34_url(session:aiohttp.ClientSession, tags: list[str]) -> Link:
             if (img != {}) and not (img is None):
                 return img[0]['file_url']
             else:
+                print(f"rule34 search with params \"{par}\" returned no valid results")
                 return "Sorry, I couldn't find any results for that! >.>"
         else:
             print(f"{response.url} returned {response.status}")
