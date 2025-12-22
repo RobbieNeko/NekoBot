@@ -12,8 +12,9 @@ Requirements to run the bot period:
   - And its dependencies (namely, aiohttp)
 - The Python Standard Library
   - json, random, base64, io (BytesIO)
-- Python 3.10 or newer
+- Python 3.13 or newer
   - Must support `type1 | type2` style syntax for Unions
+  - Versions less than 3.13 seem to run into some syntax errors regarding parentheses
 - A discord bot account with token
 
 Requirements to have certain commands functional:
