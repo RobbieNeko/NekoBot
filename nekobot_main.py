@@ -727,6 +727,21 @@ async def rule34(interaction: discord.Interaction, tags: str):
         await interaction.response.send_message(link)
 
 @bot.tree.command()
+@discord.app_commands.describe(tags="A list of tags, separated by spaces." )
+async def safebooru(interaction: discord.Interaction, tags: str):
+    """Searches safebooru.org and returns a random post matching your tags!"""
+    # Assumes the user knows how rule34 tags work
+    tagList = tags.split()
+    # Banned tags are not relevant because this should only return sfw images anyway
+    link = await safebooru_url(bot.session, tagList)
+    # All the error messages do not start with 'h'
+    if link[0] == 'h':
+        img = await file_from_url(bot.session, link, "safebooru.png")
+        await interaction.response.send_message(file=img)
+    else:
+        await interaction.response.send_message(link)
+
+@bot.tree.command()
 async def scroll(interaction: discord.Interaction, text: str):
     """Post the scroll of truth!"""
     img = await file_from_url(bot.session, f"https://api.alexflipnote.dev/scroll?text={text}", 'scroll.png')
