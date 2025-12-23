@@ -316,21 +316,23 @@ async def duck(interaction: discord.Interaction):
 @discord.app_commands.describe(tags="A list of tags, separated by spaces." )
 async def e621(interaction: discord.Interaction, tags: str):
     """Searches E621 and returns a random post matching your tags!"""
+    # Response times are sometimes long enough to make Discord annoyed
+    await interaction.response.defer()
     # Assumes the user knows how e621 tags work
     tagList = tags.split()
     for tag in tagList:
         for ban in BANNED_TAGS:
             # This catches substrings too, otherwise it'd be shockingly easy to bypass
             if ban in tag:
-                await interaction.response.send_message("Uh oh, your list of tags contained a tag for content that Discord TOS does not permit!\nSorry, but I can't help you with this search >.>")
+                await interaction.followup.send("Uh oh, your list of tags contained a tag for content that Discord TOS does not permit!\nSorry, but I can't help you with this search >.>")
     
     link = await e621API(bot.session, tagList)
     # All the error messages do not start with 'h'
     if link[0] == 'h':
         img = await file_from_url(bot.session, link, "e621.png")
-        await interaction.response.send_message(file=img)
+        await interaction.followup.send(file=img)
     else:
-        await interaction.response.send_message(link)
+        await interaction.followup.send(link)
 
 @bot.tree.command()
 async def echo(interaction: discord.Interaction, text: str):
@@ -708,6 +710,8 @@ async def rps(interaction: discord.Interaction, choice: str):
 @discord.app_commands.describe(tags="A list of tags, separated by spaces." )
 async def rule34(interaction: discord.Interaction, tags: str):
     """Searches rule34.xxx and returns a random post matching your tags!"""
+    # Response times are sometimes long enough to make Discord annoyed
+    await interaction.response.defer()
     # Assumes the user knows how rule34 tags work
     tagList = tags.split()
     if RULE34_NOAI:
@@ -716,20 +720,22 @@ async def rule34(interaction: discord.Interaction, tags: str):
         for ban in BANNED_TAGS:
             # This catches substrings too, otherwise it'd be shockingly easy to bypass
             if ban in tag:
-                await interaction.response.send_message("Uh oh, your list of tags contained a tag for content that Discord TOS does not permit!\nSorry, but I can't help you with this search >.>")
+                await interaction.followup.send("Uh oh, your list of tags contained a tag for content that Discord TOS does not permit!\nSorry, but I can't help you with this search >.>")
     
     link = await rule34_url(bot.session, tagList)
     # All the error messages do not start with 'h'
     if link[0] == 'h':
         img = await file_from_url(bot.session, link, "rule34.png")
-        await interaction.response.send_message(file=img)
+        await interaction.followup.send(file=img)
     else:
-        await interaction.response.send_message(link)
+        await interaction.followup.send(link)
 
 @bot.tree.command()
 @discord.app_commands.describe(tags="A list of tags, separated by spaces." )
 async def safebooru(interaction: discord.Interaction, tags: str):
     """Searches safebooru.org and returns a random post matching your tags!"""
+    # Response times are sometimes long enough to make Discord annoyed
+    await interaction.response.defer()
     # Assumes the user knows how rule34 tags work
     tagList = tags.split()
     # Banned tags are not relevant because this should only return sfw images anyway
@@ -737,9 +743,9 @@ async def safebooru(interaction: discord.Interaction, tags: str):
     # All the error messages do not start with 'h'
     if link[0] == 'h':
         img = await file_from_url(bot.session, link, "safebooru.png")
-        await interaction.response.send_message(file=img)
+        await interaction.followup.send(file=img)
     else:
-        await interaction.response.send_message(link)
+        await interaction.followup.send(link)
 
 @bot.tree.command()
 async def scroll(interaction: discord.Interaction, text: str):
