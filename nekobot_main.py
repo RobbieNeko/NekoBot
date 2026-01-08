@@ -350,19 +350,24 @@ async def e621(interaction: discord.Interaction, tags: str):
     await interaction.response.defer()
     # Assumes the user knows how e621 tags work
     tagList = tags.split()
+    bannedTagFound = False
     for tag in tagList:
         for ban in BANNED_TAGS:
             # This catches substrings too, otherwise it'd be shockingly easy to bypass
-            if ban in tag:
+            if (ban in tag) and not bannedTagFound:
+                bannedTagFound = True
                 await interaction.followup.send("Uh oh, your list of tags contained a tag for content that Discord TOS does not permit!\nSorry, but I can't help you with this search >.>")
-    
-    link = await e621API(bot.session, tagList)
-    # All the error messages do not start with 'h'
-    if link[0] == 'h':
-        img = await file_from_url(bot.session, link, "e621.png")
-        await interaction.followup.send(file=img)
-    else:
-        await interaction.followup.send(link)
+
+    if not bannedTagFound:
+        link = await e621API(bot.session, tagList)
+        # All the error messages do not start with 'h'
+        if type(link) == None:
+            await interaction.followup.send("Sorry, I couldn't find anything for that query!")
+        elif link[0] == 'h':
+            img = await file_from_url(bot.session, link, "e621.png")
+            await interaction.followup.send(file=img)
+        else:
+            await interaction.followup.send(link)
 
 @bot.tree.command()
 async def echo(interaction: discord.Interaction, text: str):
@@ -774,19 +779,22 @@ async def rule34(interaction: discord.Interaction, tags: str):
     tagList = tags.split()
     if RULE34_NOAI:
         tagList.append("-ai_*") # Wildcard to catch all AI
+    bannedTagFound = False
     for tag in tagList:
         for ban in BANNED_TAGS:
             # This catches substrings too, otherwise it'd be shockingly easy to bypass
-            if ban in tag:
+            if (ban in tag) and not bannedTagFound:
+                bannedTagFound = True
                 await interaction.followup.send("Uh oh, your list of tags contained a tag for content that Discord TOS does not permit!\nSorry, but I can't help you with this search >.>")
-    
-    link = await rule34_url(bot.session, tagList)
-    # All the error messages do not start with 'h'
-    if link[0] == 'h':
-        img = await file_from_url(bot.session, link, "rule34.png")
-        await interaction.followup.send(file=img)
-    else:
-        await interaction.followup.send(link)
+
+    if not bannedTagFound:
+        link = await rule34_url(bot.session, tagList)
+        # All the error messages do not start with 'h'
+        if link[0] == 'h':
+            img = await file_from_url(bot.session, link, "rule34.png")
+            await interaction.followup.send(file=img)
+        else:
+            await interaction.followup.send(link)
 
 @bot.tree.command()
 @discord.app_commands.describe(tags="A list of tags, separated by spaces." )
