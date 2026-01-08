@@ -350,18 +350,20 @@ async def e621(interaction: discord.Interaction, tags: str):
     await interaction.response.defer()
     # Assumes the user knows how e621 tags work
     tagList = tags.split()
+    userTags = tagList.copy() # Copy of just the tags the user added
     bannedTagFound = False
-    for tag in tagList:
-        for ban in BANNED_TAGS:
+    for ban in BANNED_TAGS:
+        for tag in userTags:
             # This catches substrings too, otherwise it'd be shockingly easy to bypass
             if (ban in tag) and not bannedTagFound:
                 bannedTagFound = True
                 await interaction.followup.send("Uh oh, your list of tags contained a tag for content that Discord TOS does not permit!\nSorry, but I can't help you with this search >.>")
-
+        # e621 shouldn't show these unless you're using account credentials anyway, but it's better to be safe than sorry
+        tagList.append('-' + ban)
     if not bannedTagFound:
         link = await e621API(bot.session, tagList)
         # All the error messages do not start with 'h'
-        if type(link) == None:
+        if link is None:
             await interaction.followup.send("Sorry, I couldn't find anything for that query!")
         elif link[0] == 'h':
             img = await file_from_url(bot.session, link, "e621.png")
@@ -777,16 +779,19 @@ async def rule34(interaction: discord.Interaction, tags: str):
     await interaction.response.defer()
     # Assumes the user knows how rule34 tags work
     tagList = tags.split()
+    usersTags = tagList.copy() # Make a copy of just the tags that the user submitted, rather than including tags we added
     if RULE34_NOAI:
         tagList.append("-ai_*") # Wildcard to catch all AI
     bannedTagFound = False
-    for tag in tagList:
-        for ban in BANNED_TAGS:
+    for ban in BANNED_TAGS:
+        for tag in usersTags:
             # This catches substrings too, otherwise it'd be shockingly easy to bypass
             if (ban in tag) and not bannedTagFound:
                 bannedTagFound = True
                 await interaction.followup.send("Uh oh, your list of tags contained a tag for content that Discord TOS does not permit!\nSorry, but I can't help you with this search >.>")
-
+        # We want to really make sure these tags cannot show up, and in theory it is possible to get an image from a tag to show up without directly searching for said tag
+        tagList.append('-' + ban)
+    
     if not bannedTagFound:
         link = await rule34_url(bot.session, tagList)
         # All the error messages do not start with 'h'
