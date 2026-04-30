@@ -601,6 +601,27 @@ async def lovecalc(interaction: discord.Interaction, person1: discord.User, pers
         await interaction.response.send_message(embed=emb)
 
 @bot.tree.command()
+async def madlib(interaction: discord.Interaction):
+    """Play a fun mad lib game!"""
+    lib = await madlib_response(bot.session)
+    if type(lib) != tuple:
+        await interaction.response.send_message("Oops, I had trouble fetching a madlib! Please try again in a bit.")
+    else:
+        await interaction.response.send_message("Let's play some Mad Libs! ^-^")
+        title = lib[0]
+        pairs = lib[1]
+        mad = ""
+        for pair in pairs:
+            mad += pair[0]
+            if (pair[1] is None):
+                break
+            await interaction.followup.send(f"Give me a {pair[1]}")
+            blank = await bot.wait_for("message", check=lambda m: m.author.id == interaction.user.id and m.channel.id == interaction.channel_id, timeout=30)
+            mad += blank.content
+
+        await interaction.followup.send(f"{title}\n\n{mad}")
+
+@bot.tree.command()
 @discord.app_commands.describe(target="User you want to target (optional, will default to you)" )
 async def meme(interaction: discord.Interaction, top: str, bottom: str, target: discord.User | discord.Member | None = None):
     """Make a meme out of a user!"""

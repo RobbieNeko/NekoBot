@@ -199,3 +199,19 @@ async def rule34_url(session:aiohttp.ClientSession, tags: list[str]) -> Link:
         else:
             print(f"{response.url} returned {response.status}")
             return await http_error_handler(response.status)
+
+async def madlib_response(session:aiohttp.ClientSession) -> tuple[str, list[tuple[str, str | None]]] | str:
+    """Gets a madlib from the api"""
+    provider = "https://madlibs-api.vercel.app/api/random"
+
+    async with session.get(provider) as response:
+        if response.status == 200:
+            data = await response.json()
+            pairs: list[tuple[str,str | None]] = []
+            for i in range(len(data["text"]) - 1):
+                pairs.append((data["text"][i], data["blanks"][i]))
+            pairs.append((data["text"][len(data["text"]) - 1], None))
+            return (data["title"], pairs)
+        else:
+            print(f"{response.url} returned {response.status}")
+            return await http_error_handler(response.status)
