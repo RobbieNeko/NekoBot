@@ -969,6 +969,18 @@ async def woop(interaction: discord.Interaction):
     img = discord.File("./resources/images/woop.gif")
     await interaction.response.send_message(file=img)
 
+@bot.tree.command()
+async def yuri(interaction: discord.Interaction):
+    """Grabs a cute yuri image!"""
+    # Response times are sometimes long enough to make Discord annoyed
+    await interaction.response.defer()
+    link = await safebooru_url(bot.session, ["yuri"]) # The yuri tag should imply at least 2 people
+    if link[0] == 'h':
+        img = await file_from_url(bot.session, link, 'yuri.png')
+        await interaction.followup.send(file=img)
+    else:
+        await interaction.followup.send(link)
+
 @bot.command()
 async def sync(ctx):
     # Only the owner(s) should be able to do this
